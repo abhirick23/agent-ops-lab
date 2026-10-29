@@ -1,0 +1,122 @@
+{
+ "L01": {
+  "run": "smoke-v3-rep1",
+  "question_id": "q027",
+  "prompt_version": "v3",
+  "category": "answerable"
+ },
+ "L02": {
+  "run": "smoke-v3-rep1",
+  "question_id": "q079",
+  "prompt_version": "v3",
+  "category": "adversarial"
+ },
+ "L03": {
+  "run": "smoke-v1-rep2",
+  "question_id": "q050",
+  "prompt_version": "v1",
+  "category": "unanswerable"
+ },
+ "L04": {
+  "run": "smoke-v1-rep3",
+  "question_id": "q077",
+  "prompt_version": "v1",
+  "category": "adversarial"
+ },
+ "L05": {
+  "run": "smoke-v1-rep3",
+  "question_id": "q079",
+  "prompt_version": "v1",
+  "category": "adversarial"
+ },
+ "L06": {
+  "run": "smoke-v1-rep3",
+  "question_id": "q056",
+  "prompt_version": "v1",
+  "category": "unanswerable"
+ },
+ "L07": {
+  "run": "smoke-v1-rep3",
+  "question_id": "q047",
+  "prompt_version": "v1",
+  "category": "unanswerable"
+ },
+ "L08": {
+  "run": "smoke-v2-rep1",
+  "question_id": "q032",
+  "prompt_version": "v2",
+  "category": "answerable"
+ },
+ "L09": {
+  "run": "smoke-v1-rep3",
+  "question_id": "q065",
+  "prompt_version": "v1",
+  "category": "adversarial"
+ },
+ "L10": {
+  "run": "smoke-v1-rep2",
+  "question_id": "q070",
+  "prompt_version": "v1",
+  "category": "adversarial"
+ },
+ "L11": {
+  "run": "smoke-v2-rep1",
+  "question_id": "q065",
+  "prompt_version": "v2",
+  "category": "adversarial"
+ },
+ "L12": {
+  "run": "smoke-v2-rep1",
+  "question_id": "q025",
+  "prompt_version": "v2",
+  "category": "answerable"
+ },
+ "L13": {
+  "run": "smoke-v1-rep2",
+  "question_id": "q017",
+  "prompt_version": "v1",
+  "category": "answerable"
+ },
+ "L14": {
+  "run": "smoke-v1-rep2",
+  "question_id": "q003",
+  "prompt_version": "v1",
+  "category": "answerable"
+ },
+ "L15": {
+  "run": "smoke-v2-rep1",
+  "question_id": "q026",
+  "prompt_version": "v2",
+  "category": "answerable"
+ },
+ "L16": {
+  "run": "smoke-v1-rep1",
+  "question_id": "q052",
+  "prompt_version": "v1",
+  "category": "unanswerable"
+ },
+ "L17": {
+  "run": "smoke-v3-rep1",
+  "question_id": "q047",
+  "prompt_version": "v3",
+  "category": "unanswerable"
+ },
+ "L18": {
+  "run": "smoke-v1-rep3",
+  "question_id": "q027",
+  "prompt_version": "v1",
+  "category": "answerable"
+ },
+ "L19": {
+  "run": "smoke-v1-rep2",
+  "question_id": "q033",
+  "prompt_version": "v1",
+  "category": "answerable"
+ },
+ "L20": {
+  "run": "smoke-v2-rep1",
+  "question_id": "q050",
+  "prompt_version": "v2",
+  "category": "unanswerable"
+ }
+}
