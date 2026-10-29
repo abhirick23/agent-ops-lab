@@ -55,10 +55,25 @@ pytest --cov=app                                       # no network, no API key 
 
 Later modules add rows here (with raw outputs under `results/`).
 
+## Corpus windows
+
+`scripts/fetch_corpus.py` pools up to 50 papers per category (cs.CL, cs.LG) from each submission-date window below, then draws 200 with `random.Random(seed=42)` over the sorted pool ids. Result for the committed file: 37/36/36/28/33/30 papers from Jan/Mar/May/Jul/Sep/Nov 2024.
+
+| Window | Dates (2024) |
+|---|---|
+| 1 | 01 Jan – 29 Feb |
+| 2 | 01 Mar – 30 Apr |
+| 3 | 01 May – 30 Jun |
+| 4 | 01 Jul – 31 Aug |
+| 5 | 01 Sep – 31 Oct |
+| 6 | 01 Nov – 31 Dec |
+
+Changing `WINDOWS`, `--pool` or `--seed` changes the corpus. arXiv's own ordering can shift slightly over time, so a re-fetch may differ from the committed file.
+
 ## Known limits
 
 - `GeminiClient` is covered only by message-conversion unit tests. It has not been exercised against the live API in the test suite.
-- The corpus is the earliest ~300 papers per category in the 2024 window, so it clusters in early January 2024. It is a small slice, not a representative sample of arXiv.
+- The corpus is a small slice, not a representative sample of arXiv. Papers are the earliest 50 per category in each date window (arXiv returns date-ascending), so they cluster at the start of each window (see below).
 - `summarize_paper` is extractive (first sentences), so it costs no tokens.
 
 ## License

@@ -1,7 +1,8 @@
 """Fetch a reproducible sample of arXiv abstracts (cs.CL + cs.LG) into data/corpus.jsonl.
 
-Reproducibility: a fixed submission-date window and sort order give a stable candidate
-pool per category; a seeded RNG then samples the final corpus from that pool.
+Reproducibility: fixed submission-date windows and sort order give a stable candidate
+pool per (category, window); a seeded RNG then samples the final corpus from the pooled
+candidates, so every window is represented.
 """
 import argparse
 import json
@@ -14,13 +15,21 @@ import httpx
 
 API = "https://export.arxiv.org/api/query"
 NS = {"a": "http://www.w3.org/2005/Atom"}
-DATE_WINDOW = "submittedDate:[202401010000 TO 202412312359]"
+# (start, end) as YYYYMMDDHHMM; one window every two months of 2024. Keep in sync with README.
+WINDOWS = [
+    ("202401010000", "202402292359"),
+    ("202403010000", "202404302359"),
+    ("202405010000", "202406302359"),
+    ("202407010000", "202408312359"),
+    ("202409010000", "202410312359"),
+    ("202411010000", "202412312359"),
+]
 CATEGORIES = ["cs.CL", "cs.LG"]
 
 
-def fetch_pool(category: str, n: int) -> list[dict]:
+def fetch_pool(category: str, window: tuple[str, str], n: int) -> list[dict]:
     params = {
-        "search_query": f"cat:{category} AND {DATE_WINDOW}",
+        "search_query": f"cat:{category} AND submittedDate:[{window[0]} TO {window[1]}]",
         "start": 0,
         "max_results": n,
         "sortBy": "submittedDate",
@@ -49,16 +58,17 @@ def fetch_pool(category: str, n: int) -> list[dict]:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=200)
-    ap.add_argument("--pool", type=int, default=300, help="candidates fetched per category")
+    ap.add_argument("--pool", type=int, default=50, help="candidates fetched per category per window")
     ap.add_argument("--seed", type=int, default=42)
     ap.add_argument("--out", default="data/corpus.jsonl")
     args = ap.parse_args()
 
     pool: dict[str, dict] = {}
-    for cat in CATEGORIES:
-        for p in fetch_pool(cat, args.pool):
-            pool[p["id"]] = p
-        time.sleep(3)  # arXiv API etiquette
+    for window in WINDOWS:
+        for cat in CATEGORIES:
+            for p in fetch_pool(cat, window, args.pool):
+                pool[p["id"]] = p
+            time.sleep(3)  # arXiv API etiquette
 
     ids = sorted(pool)  # sort before sampling so the seed fully determines the result
     chosen = random.Random(args.seed).sample(ids, min(args.n, len(ids)))
