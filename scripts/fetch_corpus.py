@@ -13,6 +13,8 @@ from pathlib import Path
 
 import httpx
 
+from app.corpus import write_version
+
 API = "https://export.arxiv.org/api/query"
 NS = {"a": "http://www.w3.org/2005/Atom"}
 # (start, end) as YYYYMMDDHHMM; one window every two months of 2024. Keep in sync with README.
@@ -74,10 +76,11 @@ def main() -> None:
     chosen = random.Random(args.seed).sample(ids, min(args.n, len(ids)))
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    with out.open("w", encoding="utf-8") as f:
+    with out.open("w", encoding="utf-8", newline="\n") as f:  # LF on every OS: the file is hashed byte-for-byte
         for i in sorted(chosen):
             f.write(json.dumps(pool[i]) + "\n")
     print(f"wrote {len(chosen)} papers to {out}")
+    print(f"froze corpus sha256 {write_version(out)} in {out.with_name('CORPUS_VERSION')}")
 
 
 if __name__ == "__main__":

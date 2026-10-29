@@ -4,7 +4,7 @@ else
 VENV_PY := .venv/bin/python
 endif
 
-.PHONY: setup corpus index test run
+.PHONY: setup corpus index test live run
 
 setup:  ## create .venv (Python 3.10+) and install the project with dev extras
 	python -m venv .venv
@@ -20,6 +20,9 @@ index:  ## embed the corpus into the local Chroma index
 test:  ## run pytest and write results/coverage.txt
 	@mkdir -p results
 	$(VENV_PY) -m pytest --cov=app --cov-report=term-missing | tee results/coverage.txt
+
+live:  ## live Gemini contract tests (uses free-tier quota)
+	$(VENV_PY) -m pytest -m live -v
 
 run:  ## start the API on http://localhost:8000
 	$(VENV_PY) -m uvicorn app.main:app --reload

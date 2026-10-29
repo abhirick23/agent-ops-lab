@@ -20,7 +20,9 @@ def make_client(tools):
 
 def test_health(make_client):
     r = make_client([]).get("/health")
-    assert r.status_code == 200 and r.json() == {"status": "ok"}
+    body = r.json()
+    assert r.status_code == 200 and body["status"] == "ok"
+    assert body["corpus"]["matches_frozen"] is True  # the committed corpus is the frozen one
 
 
 def test_ask_happy_path(make_client):
@@ -87,6 +89,8 @@ def test_ask_returns_latency_total_and_per_step(make_client):
     body = c.post("/ask", json={"question": "q"}).json()
     assert isinstance(body["latency_ms"], int) and body["latency_ms"] >= 0
     assert len(body["llm_ms_per_turn"]) == 2
+    assert body["wait_ms_per_turn"] == [0, 0] and body["wait_ms"] == 0
+    assert body["steps"][0]["wait_ms"] == 0
     step = body["steps"][0]
     assert isinstance(step["llm_ms"], int) and isinstance(step["tool_ms"], int)
 

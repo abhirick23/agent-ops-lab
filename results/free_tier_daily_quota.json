@@ -1,0 +1,10 @@
+{
+ "measured_at": "2026-10-29",
+ "model": "gemini-3.6-flash",
+ "finding": "Free tier allows only 20 generate_content requests PER DAY for this model on this key; exhausted during development (about 20 calls: real /ask runs, probes, hung test runs).",
+ "http_status": 429,
+ "quota_id": "GenerateRequestsPerDayPerProjectPerModel-FreeTier",
+ "quota_value": "20",
+ "retry_delay": "84185s",
+ "source": "429 RESOURCE_EXHAUSTED QuotaFailure details returned by the API"
+}

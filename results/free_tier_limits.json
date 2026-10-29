@@ -1,0 +1,53 @@
+{
+ "measured_at": "2026-10-29",
+ "results": [
+  {
+   "model": "gemini-3.6-flash",
+   "calls_before_error": 6,
+   "http_status": 429,
+   "status": "RESOURCE_EXHAUSTED",
+   "quota_id": "GenerateRequestsPerMinutePerProjectPerModel-FreeTier",
+   "quota_value": "5",
+   "retry_delay": "3s",
+   "seconds": 30.3
+  },
+  {
+   "model": "gemini-3.5-flash",
+   "calls_before_error": 14,
+   "http_status": 429,
+   "status": "RESOURCE_EXHAUSTED",
+   "quota_id": "GenerateRequestsPerMinutePerProjectPerModel-FreeTier",
+   "quota_value": "5",
+   "retry_delay": "7s",
+   "seconds": 51.4
+  },
+  {
+   "model": "gemini-3.1-flash-lite",
+   "calls_before_error": 15,
+   "http_status": 429,
+   "status": "RESOURCE_EXHAUSTED",
+   "quota_id": "GenerateRequestsPerMinutePerProjectPerModel-FreeTier",
+   "quota_value": "15",
+   "retry_delay": "21s",
+   "seconds": 41.2
+  },
+  {
+   "model": "gemini-3-flash-preview",
+   "calls_before_error": 6,
+   "http_status": 429,
+   "status": "RESOURCE_EXHAUSTED",
+   "quota_id": "GenerateRequestsPerMinutePerProjectPerModel-FreeTier",
+   "quota_value": "5",
+   "retry_delay": "4s",
+   "seconds": 11.5
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "calls_before_error": 0,
+   "http_status": 504,
+   "status": "DEADLINE_EXCEEDED",
+   "message": "504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status': 'DEADLINE_EXCEEDED'}}",
+   "seconds": 18.9
+  }
+ ]
+}

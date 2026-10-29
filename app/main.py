@@ -5,6 +5,7 @@ from fastapi import Depends, FastAPI, HTTPException
 
 from app.agent import Agent
 from app.config import get_settings
+from app.corpus import corpus_info
 from app.llm.gemini import GeminiClient
 from app.llm.resilience import build_llm
 from app.retrieval.store import PaperStore
@@ -30,7 +31,7 @@ def get_agent() -> Agent:
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok"}
+    return {"status": "ok", "corpus": corpus_info(get_settings().corpus_path)}
 
 
 @app.post("/ask", response_model=AskResponse)
@@ -48,4 +49,6 @@ def ask(req: AskRequest, agent: Agent = Depends(get_agent)) -> AskResponse:
         stopped_reason=result.stopped_reason,
         latency_ms=result.latency_ms,
         llm_ms_per_turn=result.llm_ms_per_turn,
+        wait_ms_per_turn=result.wait_ms_per_turn,
+        wait_ms=sum(result.wait_ms_per_turn),
     )

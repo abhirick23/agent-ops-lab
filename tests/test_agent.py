@@ -121,3 +121,27 @@ def test_latency_recorded_on_max_steps_too(tools):
     llm = ScriptedLLM([tool_call_response("search_papers", {"query": "x"}) for _ in range(3)])
     r = Agent(llm, tools, max_steps=2).run("q")
     assert len(r.llm_ms_per_turn) == 2 and r.latency_ms >= 0
+
+
+def test_limiter_wait_is_reported_separately_from_model_time(tools):
+    from app.llm.timing import record_wait
+
+    llm = ScriptedLLM([tool_call_response("search_papers", {"query": "x"}), text_response("done")])
+    inner = llm.generate
+
+    def throttled(*a, **k):
+        record_wait(0.2)  # as if the rate limiter had slept 200 ms
+        time.sleep(0.2)
+        return inner(*a, **k)
+
+    llm.generate = throttled
+    r = Agent(llm, tools).run("q")
+    assert r.wait_ms_per_turn == [200, 200]
+    assert all(ms < 100 for ms in r.llm_ms_per_turn)  # the sleep is not counted as model time
+    assert r.steps[0].wait_ms == 200
+    assert r.latency_ms >= 400
+
+
+def test_no_wait_reported_without_limiter(tools):
+    r = Agent(ScriptedLLM([text_response("hi")]), tools).run("q")
+    assert r.wait_ms_per_turn == [0]

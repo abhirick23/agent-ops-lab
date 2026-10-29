@@ -194,3 +194,61 @@ def test_retry_honours_server_retry_delay():
     llm = RetryingLLM(Flaky([QuotaError("28s")]), base_delay=1.0, sleep=sleeps.append, rng=random.Random(0))
     llm.generate("s", MSGS, [])
     assert sleeps == [28.0]  # backoff would have been <= 1s
+
+
+def test_effective_rpm_uses_measured_limit_per_model():
+    assert Settings(_env_file=None, gemini_model="gemini-3.1-flash-lite").effective_rpm == 15
+    assert Settings(_env_file=None, gemini_model="gemini-3.6-flash").effective_rpm == 5
+    assert Settings(_env_file=None, gemini_model="some-new-model").effective_rpm == 5  # conservative default
+
+
+def test_explicit_llm_rpm_overrides_measured_table():
+    assert Settings(_env_file=None, gemini_model="gemini-3.1-flash-lite", llm_rpm=3).effective_rpm == 3
+
+
+def test_limiter_and_backoff_waits_are_tallied_not_hidden():
+    from app.llm.timing import pop_wait_ms
+
+    pop_wait_ms()
+    clock = FakeClock()
+    limited = RateLimitedLLM(Flaky([]), rpm=1, clock=clock.now, sleep=clock.sleep)
+    limited.generate("s", MSGS, [])
+    limited.generate("s", MSGS, [])  # waits 60 s for the slot
+    assert pop_wait_ms() == 60_000
+    assert pop_wait_ms() == 0  # popping resets
+
+    RetryingLLM(Flaky([APIError(500)]), base_delay=2.0, sleep=lambda s: None, rng=random.Random(0)).generate("s", MSGS, [])
+    assert 1000 <= pop_wait_ms() <= 2000
+
+
+class DailyQuotaError(APIError):
+    def __init__(self):
+        super().__init__(429)
+        self.details = {"error": {"details": [
+            {"violations": [{"quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier", "quotaValue": "20"}]},
+            {"retryDelay": "84185s"},
+        ]}}
+
+
+def test_daily_quota_is_not_retryable_and_fails_fast():
+    from app.llm.resilience import is_daily_quota
+
+    assert is_daily_quota(DailyQuotaError()) and not is_daily_quota(QuotaError("5s"))
+    assert not is_retryable(DailyQuotaError())
+    inner, sleeps = Flaky([DailyQuotaError()]), []
+    with pytest.raises(DailyQuotaError):
+        RetryingLLM(inner, sleep=sleeps.append).generate("s", MSGS, [])
+    assert inner.calls == 1 and sleeps == []  # never sleeps for hours
+
+
+def test_absurd_server_retry_delay_is_not_obeyed():
+    inner, sleeps = Flaky([QuotaError("3600s")]), []
+    with pytest.raises(QuotaError):
+        RetryingLLM(inner, max_server_delay=120, sleep=sleeps.append).generate("s", MSGS, [])
+    assert sleeps == []
+
+
+def test_reasonable_server_retry_delay_is_obeyed_up_to_cap():
+    sleeps = []
+    RetryingLLM(Flaky([QuotaError("100s")]), max_server_delay=120, sleep=sleeps.append).generate("s", MSGS, [])
+    assert sleeps == [100.0]

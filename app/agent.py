@@ -6,6 +6,7 @@ import time
 from pydantic import BaseModel
 
 from app.llm.base import LLMClient, Message, ToolSpec
+from app.llm.timing import pop_wait_ms
 from app.schemas import Source, Step, TokenUsage
 from app.tools.base import ToolRegistry
 
@@ -30,6 +31,7 @@ class AgentResult(BaseModel):
     stopped_reason: str  # "answered" | "max_steps"
     latency_ms: int = 0
     llm_ms_per_turn: list[int] = []
+    wait_ms_per_turn: list[int] = []
 
 
 def _ms(start: float) -> int:
@@ -60,15 +62,21 @@ class Agent:
         retrieved: dict[str, Source] = {}
         usage = TokenUsage()
         llm_ms: list[int] = []
+        wait_ms: list[int] = []
 
         def result(answer: str, sources: list[Source], reason: str) -> AgentResult:
             return AgentResult(answer=answer, sources=sources, steps=steps, tokens=usage, stopped_reason=reason,
-                               latency_ms=_ms(t0), llm_ms_per_turn=llm_ms)
+                               latency_ms=_ms(t0), llm_ms_per_turn=llm_ms, wait_ms_per_turn=wait_ms)
 
         for turn in range(1, limit + 1):
+            pop_wait_ms()  # drop any stale tally from earlier work on this thread
             t_llm = time.perf_counter()
-            resp = self.llm.generate(SYSTEM_PROMPT, messages, self._specs)
-            llm_ms.append(_ms(t_llm))
+            try:
+                resp = self.llm.generate(SYSTEM_PROMPT, messages, self._specs)
+            finally:
+                wall, waited = _ms(t_llm), pop_wait_ms()
+            wait_ms.append(waited)
+            llm_ms.append(max(0, wall - waited))
             usage.input_tokens += resp.input_tokens
             usage.output_tokens += resp.output_tokens
 
@@ -88,7 +96,7 @@ class Agent:
                     _collect_sources(payload, retrieved)
                 text = json.dumps(payload)
                 steps.append(Step(turn=turn, tool=call.name, arguments=call.arguments, ok=ok,
-                                  output_preview=text[:PREVIEW_CHARS], llm_ms=llm_ms[-1], tool_ms=tool_ms))
+                                  output_preview=text[:PREVIEW_CHARS], llm_ms=llm_ms[-1], wait_ms=wait_ms[-1], tool_ms=tool_ms))
                 messages.append(Message(role="tool", tool_name=call.name, content=text))
 
         raise AssertionError("unreachable: the last turn always returns")

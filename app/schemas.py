@@ -28,7 +28,8 @@ class Step(BaseModel):
     arguments: dict
     ok: bool
     output_preview: str
-    llm_ms: int  # latency of the LLM call that requested this tool (shared by parallel calls)
+    llm_ms: int  # model time of the LLM call that requested this tool, excluding waits (shared by parallel calls)
+    wait_ms: int  # time that call spent in our rate limiter / retry backoff
     tool_ms: int  # latency of executing this tool
 
 
@@ -54,4 +55,6 @@ class AskResponse(BaseModel):
     tokens: TokenUsage
     stopped_reason: Literal["answered", "max_steps"]
     latency_ms: int  # wall-clock total for the whole request
-    llm_ms_per_turn: list[int]  # one entry per LLM call, including the final one
+    llm_ms_per_turn: list[int]  # model time per LLM call, excluding limiter/backoff waits
+    wait_ms_per_turn: list[int]  # limiter + retry-backoff time per LLM call
+    wait_ms: int  # sum of wait_ms_per_turn; latency_ms includes it
