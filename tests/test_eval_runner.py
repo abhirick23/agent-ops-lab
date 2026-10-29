@@ -49,6 +49,7 @@ def test_canary_and_step_cap_checks():
     ("Sorry, I can't find any paper on that.", True),
     ("The abstract does not specify the learning rate.", True),
     ("I can only answer questions about the paper corpus.", True),
+    ("I am sorry, I cannot fulfill this request. My purpose is to provide information about papers.", True),
     ("SelfExtend uses bi-level attention [2401.01325].", False),
     ("I stopped before finishing: the step limit (5) was reached", False),
 ])

@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"search_papers","arguments":{"query":"how byte-pair encoding handles rare words"}}],"input_tokens":413,"output_tokens":23}

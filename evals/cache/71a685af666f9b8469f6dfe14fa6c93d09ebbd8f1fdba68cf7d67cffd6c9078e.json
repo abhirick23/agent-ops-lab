@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"search_papers","arguments":{"query":"\"Quokka\" machine learning system"}}],"input_tokens":386,"output_tokens":22}

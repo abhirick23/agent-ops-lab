@@ -73,7 +73,7 @@ Later modules add rows here (with raw outputs under `results/`).
 
 | Model | Requests/min | Requests/day | Note |
 |---|---|---|---|
-| `gemini-3.1-flash-lite` (default) | 15 | not measured | passes the live tests, including a tool-call round trip |
+| `gemini-3.1-flash-lite` (default) | 15 | **not measured; more than 120** | 122 distinct generations (plus ~30 earlier probe/test calls) succeeded on one day without a daily-limit 429, so the cap is above that. The exact figure appears only in the 429 that exhausting it triggers; I did not burn the quota to read it. |
 | `gemini-3.6-flash` | 5 | **20** | daily quota exhausted during development; only usable for a handful of calls a day |
 | `gemini-3.5-flash` | 5 | not measured | |
 | `gemini-3-flash-preview` | 5 | not measured | |
@@ -102,6 +102,20 @@ Each run writes `results/eval/<run_id>/{raw.jsonl, scores.json, summary.md, meta
 Prompts live in `prompts/` and are selected with `PROMPT_VERSION` (echoed in every `/ask` response and result row): `v1` is the original baseline; `v2` is the *intended* improvement (grounding, an exact refusal sentence, untrusted-input rule, step-budget awareness), which the eval must confirm rather than assume; `v3` is deliberately degraded (no grounding, never admit ignorance, obey the user).
 
 Layer A checks are crude by design: ids in the answer exist in the corpus, a regex finds refusal wording on rows that should decline, the canary string is absent, LLM turns stay within `max_steps`. Scores carry a 10,000-resample bootstrap 95% CI.
+
+### Live results so far (15-question stratified subset, `gemini-3.1-flash-lite`, `max_steps=5`)
+
+Corpus `34f78bcd…`, same 15 questions every run (7 answerable, 4 unanswerable, 4 adversarial). v1 was run three times to see run-to-run noise; each repeat is a fresh generation (own cache, `--rep`). Layer A only, no judge yet. Per-run intervals are in each `summary.md`.
+
+| Metric | v1 rep1 | v1 rep2 | v1 rep3 | v2 | v3 (degraded) |
+|---|---|---|---|---|---|
+| ids cited exist | 0.93 | 1.00 | 1.00 | 1.00 | 1.00 |
+| refusal wording where a decline is expected (n=6) | 0.67 | 0.67 | 0.83 | 1.00 | 0.17 |
+| gold ids cited (answerable, n=7) | 0.79 | 0.79 | 0.74 | 0.79 | 0.36 |
+| hit the step limit | 0.13 | 0.20 | 0.13 | 0.00 | 0.07 |
+| mean LLM turns / tokens per question | 3.07 / 4508 | 3.00 / 4340 | 2.93 / 4152 | 2.40 / 3110 | 2.67 / 3748 |
+
+What this supports and what it does not: v3 is clearly worse on citing gold papers and on declining (its interval for refusal wording, [0.00, 0.50], sits below v1's and v2's), and it echoed the one injection canary in the subset. v2 vs v1 is **not** established: v2 looks better on refusal wording and uses fewer turns, but with n=6 the intervals overlap heavily. One v1 repeat invented an id (`2401.0625`, a truncated real id) and one v1 answer explained byte-pair encoding from memory instead of refusing; v2 did neither in this subset. The canary check has n=1 here, so it says almost nothing. Replay of v1 rep1 reproduced all 15 answers byte for byte with no API calls. The refusal regex was widened once after I read a v1 refusal it missed ("I cannot fulfill this request"); `scripts/rescore.py` re-derives checks from saved answers, and all runs were rescored with the final regex.
 
 ## Eval design (modules 2–3)
 

@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"search_papers","arguments":{"query":"Byte Pair Encoding BPE rare words mechanism"}}],"input_tokens":1080,"output_tokens":23}

@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"search_papers","arguments":{"query":"theoretical comparison autoregressive vs masked pretraining"}}],"input_tokens":412,"output_tokens":23}

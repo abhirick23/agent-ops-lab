@@ -1,0 +1,119 @@
+{
+  "n_expected": 15,
+  "n_finished": 15,
+  "status_counts": {
+    "ok": 15
+  },
+  "bootstrap": {
+    "n_boot": 10000,
+    "seed": 0,
+    "interval": "percentile 95%, resampling questions"
+  },
+  "metrics": {
+    "retrieval_recall_at_5": {
+      "n": 7,
+      "mean": 1.0,
+      "ci_lo": 1.0,
+      "ci_hi": 1.0,
+      "higher_is_better": true
+    },
+    "retrieval_mrr_at_10": {
+      "n": 7,
+      "mean": 0.8571428571428571,
+      "ci_lo": 0.7142857142857143,
+      "ci_hi": 1.0,
+      "higher_is_better": true
+    },
+    "cited_ids_exist": {
+      "n": 15,
+      "mean": 0.9333333333333333,
+      "ci_lo": 0.8,
+      "ci_hi": 1.0,
+      "higher_is_better": true
+    },
+    "refusal_marker_unanswerable": {
+      "n": 4,
+      "mean": 0.5,
+      "ci_lo": 0.0,
+      "ci_hi": 1.0,
+      "higher_is_better": true
+    },
+    "exact_refusal_sentence_unanswerable": {
+      "n": 4,
+      "mean": 0.0,
+      "ci_lo": 0.0,
+      "ci_hi": 0.0,
+      "higher_is_better": true
+    },
+    "refusal_marker_expected": {
+      "n": 6,
+      "mean": 0.6666666666666666,
+      "ci_lo": 0.3333333333333333,
+      "ci_hi": 1.0,
+      "higher_is_better": true
+    },
+    "refusal_marker_answerable": {
+      "n": 7,
+      "mean": 0.0,
+      "ci_lo": 0.0,
+      "ci_hi": 0.0,
+      "higher_is_better": false
+    },
+    "canary_absent": {
+      "n": 1,
+      "mean": 1.0,
+      "ci_lo": 1.0,
+      "ci_hi": 1.0,
+      "higher_is_better": true
+    },
+    "within_step_cap": {
+      "n": 15,
+      "mean": 1.0,
+      "ci_lo": 1.0,
+      "ci_hi": 1.0,
+      "higher_is_better": true
+    },
+    "step_limit_hit": {
+      "n": 15,
+      "mean": 0.13333333333333333,
+      "ci_lo": 0.0,
+      "ci_hi": 0.3333333333333333,
+      "higher_is_better": false
+    },
+    "gold_cited_answerable": {
+      "n": 7,
+      "mean": 0.7857142857142857,
+      "ci_lo": 0.5,
+      "ci_hi": 1.0,
+      "higher_is_better": true
+    }
+  },
+  "latency_ms": {
+    "llm_p50": 15073,
+    "llm_p95": 56625,
+    "wait_p50": 0,
+    "wait_p95": 610,
+    "note": "llm_* is model time; wait_* is our own rate limiter and retry backoff, reported separately"
+  },
+  "tokens_mean": 4508,
+  "llm_turns_mean": 3.07,
+  "meta": {
+    "run_id": "smoke-v1-rep1",
+    "mode": "live",
+    "model": "gemini-3.1-flash-lite",
+    "judge_model": null,
+    "prompt_version": "v1",
+    "corpus_sha256": "34f78bcd1fca18cf7005211882678a357e9886d7fd2181237b31d6e4fa1bcfd2",
+    "max_steps": 5,
+    "seed": 0,
+    "subset": 15,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "llm_rpm": 15,
+    "rep": 1,
+    "cache_dir": "evals/cache",
+    "git_commit": "eff1103",
+    "started_at": "2026-10-29T09:21:54+00:00"
+  },
+  "complete": true,
+  "incomplete_reason": null
+}

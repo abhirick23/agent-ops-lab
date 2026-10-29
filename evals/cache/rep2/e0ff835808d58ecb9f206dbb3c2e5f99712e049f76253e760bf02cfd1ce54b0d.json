@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"search_papers","arguments":{"query":"\"KAN\" neural networks Kolmogorov-Arnold"}}],"input_tokens":2455,"output_tokens":23}

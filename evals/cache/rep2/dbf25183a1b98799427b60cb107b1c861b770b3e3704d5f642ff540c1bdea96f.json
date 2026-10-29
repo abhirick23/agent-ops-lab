@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"search_papers","arguments":{"query":"\"Sample & Select\" decoding OR \"Sample-and-Select\" decoding model"}}],"input_tokens":1766,"output_tokens":31}

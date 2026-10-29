@@ -1,0 +1,1 @@
+{"text":"I could not find this in the paper corpus. While the paper \"Clover: Regressive Lightweight Speculative Decoding with Sequential Knowledge\" [2405.00263] discusses the architecture and performance of Clover's decoding heads, it does not specify the batch size or the optimizer used for their training.","tool_calls":[],"input_tokens":1888,"output_tokens":66}

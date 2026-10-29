@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"search_papers","arguments":{"query":"\"KAN\" Kolmogorov-Arnold network"}}],"input_tokens":2445,"output_tokens":22}

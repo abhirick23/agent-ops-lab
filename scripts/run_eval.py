@@ -47,13 +47,15 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--run-id", default=None, help="reuse to resume a run")
     ap.add_argument("--max-steps", type=int, default=None)
     ap.add_argument("--timeout", type=float, default=240.0, help="per-question wall-clock limit in seconds")
-    ap.add_argument("--cache-dir", default=DEFAULT_CACHE)
+    ap.add_argument("--rep", type=int, default=1, help="repetition number; each rep has its own response cache so repeats are real fresh generations")
+    ap.add_argument("--cache-dir", default=None, help=f"default {DEFAULT_CACHE} for rep 1, {DEFAULT_CACHE}/rep<K> otherwise")
     ap.add_argument("--out-root", default="results/eval")
     args = ap.parse_args(argv)
 
     s = get_settings()
     prompt = args.prompt or s.prompt_version
     max_steps = args.max_steps or s.max_steps
+    cache_dir = args.cache_dir or (DEFAULT_CACHE if args.rep == 1 else f"{DEFAULT_CACHE}/rep{args.rep}")
     info = corpus_info(s.corpus_path)
     if not info["matches_frozen"]:
         print(f"corpus {s.corpus_path} does not match data/CORPUS_VERSION; refusing to evaluate against it", file=sys.stderr)
@@ -68,18 +70,18 @@ def main(argv: list[str] | None = None) -> int:
         if not s.gemini_api_key:
             print("GEMINI_API_KEY is not set", file=sys.stderr)
             return 1
-        llm_settings = s.model_copy(update={"llm_cache_enabled": True, "llm_cache_dir": args.cache_dir})
+        llm_settings = s.model_copy(update={"llm_cache_enabled": True, "llm_cache_dir": cache_dir})
         llm = build_llm(llm_settings, GeminiClient(s.gemini_api_key, s.gemini_model, s.llm_timeout_s))
     elif args.mode == "replay":
-        llm = ReplayLLM(args.cache_dir, namespace=s.gemini_model)
+        llm = ReplayLLM(cache_dir, namespace=s.gemini_model)
     agent = None if args.mode == "retrieval" else Agent(llm, build_tools(store), max_steps, prompt)
 
-    run_id = args.run_id or f"{prompt}-{args.mode}-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+    run_id = args.run_id or f"{prompt}-{args.mode}-rep{args.rep}-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
     meta = {
         "run_id": run_id, "mode": args.mode, "model": model, "judge_model": None, "prompt_version": prompt,
         "corpus_sha256": info["sha256"], "max_steps": max_steps, "seed": args.seed, "subset": args.subset,
         "embedding_model": s.embedding_model, "llm_rpm": s.effective_rpm if args.mode == "live" else None,
-        "cache_dir": args.cache_dir if args.mode != "retrieval" else None, "git_commit": git_commit(),
+        "rep": args.rep, "cache_dir": cache_dir if args.mode != "retrieval" else None, "git_commit": git_commit(),
         "started_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
     out_dir = Path(args.out_root) / run_id

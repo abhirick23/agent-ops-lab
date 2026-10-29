@@ -1,0 +1,17 @@
+{
+  "run_id": "smoke-v1-rep3",
+  "mode": "live",
+  "model": "gemini-3.1-flash-lite",
+  "judge_model": null,
+  "prompt_version": "v1",
+  "corpus_sha256": "34f78bcd1fca18cf7005211882678a357e9886d7fd2181237b31d6e4fa1bcfd2",
+  "max_steps": 5,
+  "seed": 0,
+  "subset": 15,
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "llm_rpm": 15,
+  "rep": 3,
+  "cache_dir": "evals/cache/rep3",
+  "git_commit": "eff1103",
+  "started_at": "2026-10-29T09:32:53+00:00"
+}

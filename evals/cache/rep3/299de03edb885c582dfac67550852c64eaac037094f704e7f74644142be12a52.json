@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"search_papers","arguments":{"query":"improving logical reasoning of LLMs using propositional and predicate logic"}}],"input_tokens":422,"output_tokens":27}

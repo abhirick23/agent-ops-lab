@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"search_papers","arguments":{"query":"LLM evaluation benchmarks rating systems statistical error bars private benchmarks"}}],"input_tokens":400,"output_tokens":26}

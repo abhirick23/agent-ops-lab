@@ -1,0 +1,1 @@
+{"text":"","tool_calls":[{"name":"search_papers","arguments":{"query":"\"Clover\" \"training\" \"batch size\" \"AdamW\""}}],"input_tokens":2437,"output_tokens":30}

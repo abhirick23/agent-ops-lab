@@ -83,7 +83,7 @@ def check_resume(out_dir: Path, meta: dict) -> None:
     path = out_dir / "meta.json"
     if path.exists():
         old = json.loads(path.read_text(encoding="utf-8"))
-        keys = ["mode", "model", "judge_model", "prompt_version", "corpus_sha256", "max_steps", "seed", "subset"]
+        keys = ["mode", "model", "judge_model", "prompt_version", "corpus_sha256", "max_steps", "seed", "subset", "rep"]
         diff = {k: (old.get(k), meta.get(k)) for k in keys if old.get(k) != meta.get(k)}
         if diff:
             raise SystemExit(f"cannot resume {out_dir}: setup changed (old, new): {diff}")
