@@ -73,7 +73,7 @@ Changing `WINDOWS`, `--pool` or `--seed` changes the corpus. arXiv's own orderin
 ## Known limits
 
 - `GeminiClient` is covered only by message-conversion unit tests. It has not been exercised against the live API in the test suite.
-- The corpus is a small slice, not a representative sample of arXiv. Papers are the earliest 50 per category in each date window (arXiv returns date-ascending), so they cluster at the start of each window (see below).
+- The corpus is a small slice, not a representative sample of arXiv. Papers are the earliest 50 per category in each date window (arXiv returns date-ascending), so they cluster at the start of each window (see Corpus windows).
 - `summarize_paper` is extractive (first sentences), so it costs no tokens.
 
 ## License

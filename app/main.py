@@ -6,6 +6,7 @@ from fastapi import Depends, FastAPI, HTTPException
 from app.agent import Agent
 from app.config import get_settings
 from app.llm.gemini import GeminiClient
+from app.llm.resilience import build_llm
 from app.retrieval.store import PaperStore
 from app.schemas import AskRequest, AskResponse
 from app.tools.papers import build_tools
@@ -23,7 +24,8 @@ def get_agent() -> Agent:
     if store.count() == 0:
         log.info("empty index, loading %s", s.corpus_path)
         store.load_corpus(s.corpus_path)
-    return Agent(GeminiClient(s.gemini_api_key, s.gemini_model), build_tools(store), s.max_steps)
+    llm = build_llm(s, GeminiClient(s.gemini_api_key, s.gemini_model))
+    return Agent(llm, build_tools(store), s.max_steps)
 
 
 @app.get("/health")

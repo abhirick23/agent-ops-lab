@@ -7,3 +7,4 @@ htmlcov/
 .env
 data/chroma/
 *.egg-info/
+data/llm_cache/

@@ -9,6 +9,13 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
 
+    # Resilience. Gemini free tier is roughly 10 requests/minute for flash models.
+    llm_rpm: int = 10
+    llm_max_retries: int = 4
+    llm_retry_base_delay: float = 1.0
+    llm_cache_enabled: bool = False
+    llm_cache_dir: str = "data/llm_cache"
+
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     chroma_dir: str = "data/chroma"
     collection_name: str = "papers"
