@@ -7,7 +7,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-2.5-flash"
+    gemini_model: str = "gemini-3.8-flash"
+    llm_timeout_s: float = 60.0
 
     # Resilience. Gemini free tier is roughly 10 requests/minute for flash models.
     llm_rpm: int = 10

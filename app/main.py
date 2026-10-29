@@ -24,7 +24,7 @@ def get_agent() -> Agent:
     if store.count() == 0:
         log.info("empty index, loading %s", s.corpus_path)
         store.load_corpus(s.corpus_path)
-    llm = build_llm(s, GeminiClient(s.gemini_api_key, s.gemini_model))
+    llm = build_llm(s, GeminiClient(s.gemini_api_key, s.gemini_model, s.llm_timeout_s))
     return Agent(llm, build_tools(store), s.max_steps)
 
 

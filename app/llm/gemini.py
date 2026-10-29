@@ -5,8 +5,9 @@ from app.llm.base import LLMResponse, Message, ToolCall, ToolSpec
 
 
 class GeminiClient:
-    def __init__(self, api_key: str, model: str):
-        self._client = genai.Client(api_key=api_key)
+    def __init__(self, api_key: str, model: str, timeout_s: float = 60.0):
+        # Without an explicit timeout the SDK waits forever on a stalled connection.
+        self._client = genai.Client(api_key=api_key, http_options=types.HttpOptions(timeout=int(timeout_s * 1000)))
         self._model = model
 
     @staticmethod

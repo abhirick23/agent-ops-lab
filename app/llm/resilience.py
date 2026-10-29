@@ -13,6 +13,8 @@ from collections import deque
 from pathlib import Path
 from typing import Callable
 
+import httpx
+
 from app.config import Settings
 from app.llm.base import LLMClient, LLMResponse, Message, ToolSpec
 
@@ -20,7 +22,10 @@ log = logging.getLogger("agent_ops.llm")
 
 
 def is_retryable(exc: BaseException) -> bool:
-    """429 and 5xx. Works with google-genai errors (`.code`) and httpx-style (`.status_code`)."""
+    """429, 5xx and network timeouts/connection errors. Works with google-genai errors (`.code`)
+    and httpx-style errors (`.status_code`)."""
+    if isinstance(exc, (httpx.TimeoutException, httpx.ConnectError)):
+        return True
     code = getattr(exc, "code", None) or getattr(exc, "status_code", None)
     return isinstance(code, int) and (code == 429 or 500 <= code <= 599)
 

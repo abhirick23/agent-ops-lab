@@ -1,5 +1,6 @@
 import random
 
+import httpx
 import pytest
 
 from app.config import Settings
@@ -33,6 +34,13 @@ class Flaky:
 def test_is_retryable(code, expected):
     exc = APIError(code) if code else ValueError("x")
     assert is_retryable(exc) is expected
+
+
+@pytest.mark.parametrize("exc", [httpx.ReadTimeout("t"), httpx.ConnectTimeout("t"), httpx.ConnectError("c")])
+def test_network_timeouts_are_retryable(exc):
+    assert is_retryable(exc)
+    inner = Flaky([exc])
+    assert RetryingLLM(inner, sleep=lambda s: None).generate("s", MSGS, []).text == "ok"
 
 
 def test_retry_succeeds_after_transient_errors():
