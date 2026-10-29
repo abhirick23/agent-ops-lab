@@ -5,7 +5,8 @@ import pytest
 
 from app.config import Settings
 from app.llm.base import LLMResponse, Message
-from app.llm.resilience import CachingLLM, RateLimitedLLM, RetryingLLM, build_llm, is_retryable
+from app.llm.resilience import (CachingLLM, RateLimitedLLM, RetryingLLM, build_llm, is_retryable,
+                                retry_after_s)
 
 MSGS = [Message(role="user", content="hi")]
 
@@ -174,3 +175,22 @@ def test_build_llm_cache_enabled_by_env(tmp_path, monkeypatch):
     monkeypatch.setenv("LLM_CACHE_ENABLED", "true")
     s = Settings(_env_file=None, llm_cache_dir=str(tmp_path / "c"))
     assert isinstance(build_llm(s, Flaky([])), CachingLLM)
+
+
+class QuotaError(APIError):
+    def __init__(self, delay):
+        super().__init__(429)
+        self.details = {"error": {"details": [{"@type": "type.googleapis.com/google.rpc.RetryInfo", "retryDelay": delay}]}}
+
+
+def test_retry_after_parsing():
+    assert retry_after_s(QuotaError("28s")) == 28.0
+    assert retry_after_s(QuotaError("bogus")) is None
+    assert retry_after_s(APIError(429)) is None
+
+
+def test_retry_honours_server_retry_delay():
+    sleeps = []
+    llm = RetryingLLM(Flaky([QuotaError("28s")]), base_delay=1.0, sleep=sleeps.append, rng=random.Random(0))
+    llm.generate("s", MSGS, [])
+    assert sleeps == [28.0]  # backoff would have been <= 1s

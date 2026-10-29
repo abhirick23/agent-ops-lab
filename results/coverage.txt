@@ -1,5 +1,5 @@
-........................................................................ [ 96%]
-...                                                                      [100%]
+........................................................................ [ 93%]
+.....                                                                    [100%]
 =============================== tests coverage ================================
 ______________ coverage: platform win32, python 3.10.11-final-0 _______________
 
@@ -11,7 +11,7 @@ app\config.py                  23      1    96%   34
 app\llm\__init__.py             0      0   100%
 app\llm\base.py                22      0   100%
 app\llm\gemini.py              32      9    72%   10-11, 36-51
-app\llm\resilience.py          82      1    99%   82
+app\llm\resilience.py          94      1    99%   97
 app\main.py                    34      6    82%   23-28
 app\retrieval\__init__.py       0      0   100%
 app\retrieval\embedder.py      11      6    45%   12-13, 16-20
@@ -22,5 +22,5 @@ app\tools\__init__.py           0      0   100%
 app\tools\base.py              31      0   100%
 app\tools\papers.py            46      0   100%
 ---------------------------------------------------------
-TOTAL                         452     32    93%
-75 passed in 5.16s
+TOTAL                         464     32    93%
+77 passed in 4.09s

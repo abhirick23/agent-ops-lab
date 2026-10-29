@@ -30,6 +30,20 @@ def is_retryable(exc: BaseException) -> bool:
     return isinstance(code, int) and (code == 429 or 500 <= code <= 599)
 
 
+def retry_after_s(exc: BaseException) -> float | None:
+    """Server-suggested wait from a Google RetryInfo detail (e.g. '28s'), if present."""
+    body = getattr(exc, "details", None)
+    details = body.get("error", {}).get("details", []) if isinstance(body, dict) else []
+    for d in details:
+        delay = d.get("retryDelay") if isinstance(d, dict) else None
+        if isinstance(delay, str) and delay.endswith("s"):
+            try:
+                return float(delay[:-1])
+            except ValueError:
+                pass
+    return None
+
+
 class RateLimitedLLM:
     """Sliding-window limiter: at most `rpm` calls in any 60 s."""
 
@@ -77,6 +91,7 @@ class RetryingLLM:
                 if attempt == self.max_retries or not is_retryable(e):
                     raise
                 delay = min(self.max_delay, self.base_delay * 2**attempt) * self._rng.uniform(0.5, 1.0)
+                delay = max(delay, retry_after_s(e) or 0.0)  # never retry sooner than the server asked
                 log.warning("LLM call failed (%s), retry %d/%d in %.1fs", e, attempt + 1, self.max_retries, delay)
                 self._sleep(delay)
         raise AssertionError("unreachable")

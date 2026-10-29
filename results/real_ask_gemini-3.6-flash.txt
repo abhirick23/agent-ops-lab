@@ -1,0 +1,2173 @@
+# One real /ask via the app's real dependencies (TestClient in-process), model gemini-3.6-flash, 2026-10-29.
+# Raw Gemini HTTP traffic dumped by a request/response hook; API key redacted. Script: scripts/real_ask.py
+POST /ask {"question": "Which papers in the corpus discuss reasoning in large language models? Name one and summarize it."}
+
+===== GEMINI REQUEST #1 =====
+POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+{
+ "host": "generativelanguage.googleapis.com",
+ "accept": "*/*",
+ "accept-encoding": "gzip, deflate",
+ "connection": "keep-alive",
+ "content-type": "application/json",
+ "x-goog-api-key": "<redacted>",
+ "user-agent": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-goog-api-client": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-server-timeout": "60",
+ "content-length": "1774"
+}
+{
+ "contents": [
+  {
+   "parts": [
+    {
+     "text": "Which papers in the corpus discuss reasoning in large language models? Name one and summarize it."
+    }
+   ],
+   "role": "user"
+  }
+ ],
+ "systemInstruction": {
+  "parts": [
+   {
+    "text": "You answer questions about machine-learning papers using only the provided tools.\nUse search_papers to find candidates, get_paper or summarize_paper for detail.\nCite papers by arXiv id in square brackets, e.g. [2401.01234].\nIf the tools return nothing relevant, say you could not find it instead of guessing."
+   }
+  ],
+  "role": "user"
+ },
+ "tools": [
+  {
+   "functionDeclarations": [
+    {
+     "description": "Semantic search over the paper corpus. Returns ids, titles and snippets.",
+     "name": "search_papers",
+     "parameters_json_schema": {
+      "properties": {
+       "query": {
+        "description": "Natural-language search query.",
+        "minLength": 1,
+        "title": "Query",
+        "type": "string"
+       },
+       "k": {
+        "default": 5,
+        "description": "Number of papers to return.",
+        "maximum": 10,
+        "minimum": 1,
+        "title": "K",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "query"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Fetch the full abstract and metadata of one paper by arXiv id.",
+     "name": "get_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Extractive summary (first sentences of the abstract) of one paper by id.",
+     "name": "summarize_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       },
+       "max_sentences": {
+        "default": 2,
+        "maximum": 5,
+        "minimum": 1,
+        "title": "Max Sentences",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    }
+   ]
+  }
+ ],
+ "generationConfig": {}
+}
+
+===== GEMINI RESPONSE #1 (HTTP 200) =====
+{
+ "candidates": [
+  {
+   "content": {
+    "parts": [
+     {
+      "functionCall": {
+       "name": "search_papers",
+       "args": {
+        "query": "reasoning in large language models"
+       },
+       "id": "call_214610"
+      },
+      "thoughtSignature": "Er0CCroCAWkUfROqbzuhpB0Y8tzLns/UCeRCTeBVP0aeUpE/RR5X6iZoGmPI4cIkKUKS6PuZBItFZDSNzQy28fWJwwdOGU2BYzfuORFEQlsRMpqXETQJVlDsDqk1rrYcCeNAElf3cFb5mNbxkEKvv6UKPW+BtV42dxLNDruCGE480FqsuKP5jHWMQgiu7iil5GkA35S1bYFQ8McbgkMjYy2/rJbMbUo/iTJSY20Iijyxxh382AOHds/zqUn8XZwx0k3Sj0OzFkdet7pe5KbvF4P6A74i0d3X40HnqLX/5OTckpxZ/ilDCyFm0JGJrf2ZAnF1KEFpinXayeAKM3jA6oiy8JKeccCy6V793L/X+K9GpEhKeEdp80ZJhL9FV1tKSQp1QMBEjA3P64PnxodHQCkOY3awbxueifeTwj4jEKY="
+     }
+    ],
+    "role": "model"
+   },
+   "finishReason": "STOP",
+   "index": 0,
+   "finishMessage": "Model generated function call(s)."
+  }
+ ],
+ "usageMetadata": {
+  "promptTokenCount": 419,
+  "candidatesTokenCount": 21,
+  "totalTokenCount": 482,
+  "promptTokensDetails": [
+   {
+    "modality": "TEXT",
+    "tokenCount": 419
+   }
+  ],
+  "thoughtsTokenCount": 42,
+  "serviceTier": "standard"
+ },
+ "modelVersion": "gemini-3.6-flash",
+ "responseId": "suviaqrxG6PYjuMPgLWz8Q4"
+}
+
+===== GEMINI REQUEST #2 =====
+POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+{
+ "host": "generativelanguage.googleapis.com",
+ "accept": "*/*",
+ "accept-encoding": "gzip, deflate",
+ "connection": "keep-alive",
+ "content-type": "application/json",
+ "x-goog-api-key": "<redacted>",
+ "user-agent": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-goog-api-client": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-server-timeout": "60",
+ "content-length": "5069"
+}
+{
+ "contents": [
+  {
+   "parts": [
+    {
+     "text": "Which papers in the corpus discuss reasoning in large language models? Name one and summarize it."
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_214610",
+      "args": {
+       "query": "reasoning in large language models"
+      },
+      "name": "search_papers"
+     },
+     "thoughtSignature": "Er0CCroCAWkUfROqbzuhpB0Y8tzLns_UCeRCTeBVP0aeUpE_RR5X6iZoGmPI4cIkKUKS6PuZBItFZDSNzQy28fWJwwdOGU2BYzfuORFEQlsRMpqXETQJVlDsDqk1rrYcCeNAElf3cFb5mNbxkEKvv6UKPW-BtV42dxLNDruCGE480FqsuKP5jHWMQgiu7iil5GkA35S1bYFQ8McbgkMjYy2_rJbMbUo_iTJSY20Iijyxxh382AOHds_zqUn8XZwx0k3Sj0OzFkdet7pe5KbvF4P6A74i0d3X40HnqLX_5OTckpxZ_ilDCyFm0JGJrf2ZAnF1KEFpinXayeAKM3jA6oiy8JKeccCy6V793L_X-K9GpEhKeEdp80ZJhL9FV1tKSQp1QMBEjA3P64PnxodHQCkOY3awbxueifeTwj4jEKY="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "search_papers",
+      "response": {
+       "result": "{\"results\": [{\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"snippet\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers \", \"score\": 0.6299, \"url\": \"http://arxiv.org/abs/2407.01009v1\"}, {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"snippet\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instea\", \"score\": 0.608, \"url\": \"http://arxiv.org/abs/2405.00332v4\"}, {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"snippet\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has\", \"score\": 0.5935, \"url\": \"http://arxiv.org/abs/2401.00757v3\"}, {\"id\": \"2401.00761\", \"title\": \"Identifying the Achilles' Heel: An Iterative Method for Dynamically Uncovering Factual Errors in Large Language Models\", \"snippet\": \"Large Language Models (LLMs) like ChatGPT are foundational in various applications due to their extensive knowledge from pre-training and fine-tuning. Despite this, they are prone to generating factual and commonsense errors, raising concerns in critical areas like healthcare, journalism, and educat\", \"score\": 0.5321, \"url\": \"http://arxiv.org/abs/2401.00761v2\"}, {\"id\": \"2401.00698\", \"title\": \"Large Language Models aren't all that you need\", \"snippet\": \"This paper describes the architecture and systems built towards solving the SemEval 2023 Task 2: MultiCoNER II (Multilingual Complex Named Entity Recognition) [1]. We evaluate two approaches (a) a traditional Conditional Random Fields model and (b) a Large Language Model (LLM) fine-tuned with a cust\", \"score\": 0.5206, \"url\": \"http://arxiv.org/abs/2401.00698v1\"}]}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  }
+ ],
+ "systemInstruction": {
+  "parts": [
+   {
+    "text": "You answer questions about machine-learning papers using only the provided tools.\nUse search_papers to find candidates, get_paper or summarize_paper for detail.\nCite papers by arXiv id in square brackets, e.g. [2401.01234].\nIf the tools return nothing relevant, say you could not find it instead of guessing."
+   }
+  ],
+  "role": "user"
+ },
+ "tools": [
+  {
+   "functionDeclarations": [
+    {
+     "description": "Semantic search over the paper corpus. Returns ids, titles and snippets.",
+     "name": "search_papers",
+     "parameters_json_schema": {
+      "properties": {
+       "query": {
+        "description": "Natural-language search query.",
+        "minLength": 1,
+        "title": "Query",
+        "type": "string"
+       },
+       "k": {
+        "default": 5,
+        "description": "Number of papers to return.",
+        "maximum": 10,
+        "minimum": 1,
+        "title": "K",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "query"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Fetch the full abstract and metadata of one paper by arXiv id.",
+     "name": "get_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Extractive summary (first sentences of the abstract) of one paper by id.",
+     "name": "summarize_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       },
+       "max_sentences": {
+        "default": 2,
+        "maximum": 5,
+        "minimum": 1,
+        "title": "Max Sentences",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    }
+   ]
+  }
+ ],
+ "generationConfig": {}
+}
+
+===== GEMINI RESPONSE #2 (HTTP 200) =====
+{
+ "candidates": [
+  {
+   "content": {
+    "parts": [
+     {
+      "functionCall": {
+       "name": "get_paper",
+       "args": {
+        "paper_id": "2407.01009"
+       },
+       "id": "call_189683"
+      },
+      "thoughtSignature": "EroCCrcCAWkUfROz5FG98TFWg7iw4S/fRHZJ5kGFsKviLq5b8KGaQTkLgj6CPffOaPplDn9bW+JN9VXqo2X8K03OJHIKvgAdEx5pVEY2v66M55wWDjk1pyXoGOw/rhaC1xEAhnxsPFHikpDQzTLiZtvleweRYoaSPD/2t6D4vqlM9pvmwfhqzrfbxyg4A1SSQAFzBNxz45mJXvyM5U3Nf7LiOwX3zWEAxpHW+6UqVSBjDs0Jk8zIgbmk3c508Ok2HAutqUmfvolQo7SZ81yV+nuCQ66JXMJDH0mo1hqxZVIwGg2Dvv/CkPb/iz8C62B689pgYNxvwRKxyr8OItt0UMBGfSvBqwYbtbLtzt9e99Jo3VG/RP3etDRyZrGE8QBk1v+Ja+jbpbT687De27kIRI9mGZKhpozDUV24KUw="
+     }
+    ],
+    "role": "model"
+   },
+   "finishReason": "STOP",
+   "index": 0,
+   "finishMessage": "Model generated function call(s)."
+  }
+ ],
+ "usageMetadata": {
+  "promptTokenCount": 1160,
+  "candidatesTokenCount": 27,
+  "totalTokenCount": 1293,
+  "promptTokensDetails": [
+   {
+    "modality": "TEXT",
+    "tokenCount": 1160
+   }
+  ],
+  "thoughtsTokenCount": 106,
+  "serviceTier": "standard"
+ },
+ "modelVersion": "gemini-3.6-flash",
+ "responseId": "v-viaqacNNbKmNMP3t3zmQ8"
+}
+
+===== GEMINI REQUEST #3 =====
+POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+{
+ "host": "generativelanguage.googleapis.com",
+ "accept": "*/*",
+ "accept-encoding": "gzip, deflate",
+ "connection": "keep-alive",
+ "content-type": "application/json",
+ "x-goog-api-key": "<redacted>",
+ "user-agent": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-goog-api-client": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-server-timeout": "60",
+ "content-length": "7183"
+}
+{
+ "contents": [
+  {
+   "parts": [
+    {
+     "text": "Which papers in the corpus discuss reasoning in large language models? Name one and summarize it."
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_214610",
+      "args": {
+       "query": "reasoning in large language models"
+      },
+      "name": "search_papers"
+     },
+     "thoughtSignature": "Er0CCroCAWkUfROqbzuhpB0Y8tzLns_UCeRCTeBVP0aeUpE_RR5X6iZoGmPI4cIkKUKS6PuZBItFZDSNzQy28fWJwwdOGU2BYzfuORFEQlsRMpqXETQJVlDsDqk1rrYcCeNAElf3cFb5mNbxkEKvv6UKPW-BtV42dxLNDruCGE480FqsuKP5jHWMQgiu7iil5GkA35S1bYFQ8McbgkMjYy2_rJbMbUo_iTJSY20Iijyxxh382AOHds_zqUn8XZwx0k3Sj0OzFkdet7pe5KbvF4P6A74i0d3X40HnqLX_5OTckpxZ_ilDCyFm0JGJrf2ZAnF1KEFpinXayeAKM3jA6oiy8JKeccCy6V793L_X-K9GpEhKeEdp80ZJhL9FV1tKSQp1QMBEjA3P64PnxodHQCkOY3awbxueifeTwj4jEKY="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "search_papers",
+      "response": {
+       "result": "{\"results\": [{\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"snippet\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers \", \"score\": 0.6299, \"url\": \"http://arxiv.org/abs/2407.01009v1\"}, {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"snippet\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instea\", \"score\": 0.608, \"url\": \"http://arxiv.org/abs/2405.00332v4\"}, {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"snippet\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has\", \"score\": 0.5935, \"url\": \"http://arxiv.org/abs/2401.00757v3\"}, {\"id\": \"2401.00761\", \"title\": \"Identifying the Achilles' Heel: An Iterative Method for Dynamically Uncovering Factual Errors in Large Language Models\", \"snippet\": \"Large Language Models (LLMs) like ChatGPT are foundational in various applications due to their extensive knowledge from pre-training and fine-tuning. Despite this, they are prone to generating factual and commonsense errors, raising concerns in critical areas like healthcare, journalism, and educat\", \"score\": 0.5321, \"url\": \"http://arxiv.org/abs/2401.00761v2\"}, {\"id\": \"2401.00698\", \"title\": \"Large Language Models aren't all that you need\", \"snippet\": \"This paper describes the architecture and systems built towards solving the SemEval 2023 Task 2: MultiCoNER II (Multilingual Complex Named Entity Recognition) [1]. We evaluate two approaches (a) a traditional Conditional Random Fields model and (b) a Large Language Model (LLM) fine-tuned with a cust\", \"score\": 0.5206, \"url\": \"http://arxiv.org/abs/2401.00698v1\"}]}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_189683",
+      "args": {
+       "paper_id": "2407.01009"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EroCCrcCAWkUfROz5FG98TFWg7iw4S_fRHZJ5kGFsKviLq5b8KGaQTkLgj6CPffOaPplDn9bW-JN9VXqo2X8K03OJHIKvgAdEx5pVEY2v66M55wWDjk1pyXoGOw_rhaC1xEAhnxsPFHikpDQzTLiZtvleweRYoaSPD_2t6D4vqlM9pvmwfhqzrfbxyg4A1SSQAFzBNxz45mJXvyM5U3Nf7LiOwX3zWEAxpHW-6UqVSBjDs0Jk8zIgbmk3c508Ok2HAutqUmfvolQo7SZ81yV-nuCQ66JXMJDH0mo1hqxZVIwGg2Dvv_CkPb_iz8C62B689pgYNxvwRKxyr8OItt0UMBGfSvBqwYbtbLtzt9e99Jo3VG_RP3etDRyZrGE8QBk1v-Ja-jbpbT687De27kIRI9mGZKhpozDUV24KUw="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"abstract\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers multiple reasoning pathways and verifies each step carefully, results in slower inference. This paper addresses the challenge of enabling LLMs to autonomously select between fast and slow inference methods, thereby optimizing both efficiency and effectiveness. We introduce a dynamic decision-making framework that categorizes tasks into two distinct pathways: 'Fast', designated for tasks where the LLM quickly identifies a high-confidence solution, and 'Slow', allocated for tasks that the LLM perceives as complex and for which it has low confidence in immediate solutions as well as requiring more reasoning paths to verify. Experiments on five popular reasoning benchmarks demonstrated the superiority of the DynaThink over baselines.\", \"authors\": [\"Jiabao Pan\", \"Yan Zhang\", \"Chen Zhang\", \"Zuozhu Liu\", \"Hongwei Wang\", \"Haizhou Li\"], \"published\": \"2024-07-01\", \"categories\": [\"cs.CL\"], \"url\": \"http://arxiv.org/abs/2407.01009v1\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  }
+ ],
+ "systemInstruction": {
+  "parts": [
+   {
+    "text": "You answer questions about machine-learning papers using only the provided tools.\nUse search_papers to find candidates, get_paper or summarize_paper for detail.\nCite papers by arXiv id in square brackets, e.g. [2401.01234].\nIf the tools return nothing relevant, say you could not find it instead of guessing."
+   }
+  ],
+  "role": "user"
+ },
+ "tools": [
+  {
+   "functionDeclarations": [
+    {
+     "description": "Semantic search over the paper corpus. Returns ids, titles and snippets.",
+     "name": "search_papers",
+     "parameters_json_schema": {
+      "properties": {
+       "query": {
+        "description": "Natural-language search query.",
+        "minLength": 1,
+        "title": "Query",
+        "type": "string"
+       },
+       "k": {
+        "default": 5,
+        "description": "Number of papers to return.",
+        "maximum": 10,
+        "minimum": 1,
+        "title": "K",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "query"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Fetch the full abstract and metadata of one paper by arXiv id.",
+     "name": "get_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Extractive summary (first sentences of the abstract) of one paper by id.",
+     "name": "summarize_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       },
+       "max_sentences": {
+        "default": 2,
+        "maximum": 5,
+        "minimum": 1,
+        "title": "Max Sentences",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    }
+   ]
+  }
+ ],
+ "generationConfig": {}
+}
+
+===== GEMINI RESPONSE #3 (HTTP 200) =====
+{
+ "candidates": [
+  {
+   "content": {
+    "parts": [
+     {
+      "functionCall": {
+       "name": "get_paper",
+       "args": {
+        "paper_id": "2401.00757"
+       },
+       "id": "call_226128"
+      },
+      "thoughtSignature": "Eo4CCosCAWkUfROC7KoSjEgu4kfO7QQVnkl69O3O6vAF6EpTSBaRT/rglsdG/xU3S7nHYVsaCHftPt+WsMwsyPTNwoRc5VAaOi+TB0qcOkLq00A1CLvAKnJhA7nKMLmYbn+Yoa09opf7ZJmlE7ikefYYFQeeJQnhB5UPrFzKuN0PV68/pZChkKpU5HNM59V3KcH+XrXE+7h6h3kyB4yClBJpv7JOwYU8YxQ1wnAG/CcMlKXTFD+6ti5Mvfu7fyCGnyu91kugTBgiUx4eAx7lFqmt7Ne2oBZh5ojs2ITVEb7/suWQYuFHZIv4PQUEucZQIgkilnFaKI0LH7JyP0oKKorgxe7PlFc18BYcY4gNczqa"
+     }
+    ],
+    "role": "model"
+   },
+   "finishReason": "STOP",
+   "index": 0,
+   "finishMessage": "Model generated function call(s)."
+  }
+ ],
+ "usageMetadata": {
+  "promptTokenCount": 1615,
+  "candidatesTokenCount": 27,
+  "totalTokenCount": 1695,
+  "promptTokensDetails": [
+   {
+    "modality": "TEXT",
+    "tokenCount": 1615
+   }
+  ],
+  "thoughtsTokenCount": 53,
+  "serviceTier": "standard"
+ },
+ "modelVersion": "gemini-3.6-flash",
+ "responseId": "w-viao6eOr20juMP0N-hEQ"
+}
+
+===== GEMINI REQUEST #4 =====
+POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+{
+ "host": "generativelanguage.googleapis.com",
+ "accept": "*/*",
+ "accept-encoding": "gzip, deflate",
+ "connection": "keep-alive",
+ "content-type": "application/json",
+ "x-goog-api-key": "<redacted>",
+ "user-agent": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-goog-api-client": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-server-timeout": "60",
+ "content-length": "9546"
+}
+{
+ "contents": [
+  {
+   "parts": [
+    {
+     "text": "Which papers in the corpus discuss reasoning in large language models? Name one and summarize it."
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_214610",
+      "args": {
+       "query": "reasoning in large language models"
+      },
+      "name": "search_papers"
+     },
+     "thoughtSignature": "Er0CCroCAWkUfROqbzuhpB0Y8tzLns_UCeRCTeBVP0aeUpE_RR5X6iZoGmPI4cIkKUKS6PuZBItFZDSNzQy28fWJwwdOGU2BYzfuORFEQlsRMpqXETQJVlDsDqk1rrYcCeNAElf3cFb5mNbxkEKvv6UKPW-BtV42dxLNDruCGE480FqsuKP5jHWMQgiu7iil5GkA35S1bYFQ8McbgkMjYy2_rJbMbUo_iTJSY20Iijyxxh382AOHds_zqUn8XZwx0k3Sj0OzFkdet7pe5KbvF4P6A74i0d3X40HnqLX_5OTckpxZ_ilDCyFm0JGJrf2ZAnF1KEFpinXayeAKM3jA6oiy8JKeccCy6V793L_X-K9GpEhKeEdp80ZJhL9FV1tKSQp1QMBEjA3P64PnxodHQCkOY3awbxueifeTwj4jEKY="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "search_papers",
+      "response": {
+       "result": "{\"results\": [{\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"snippet\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers \", \"score\": 0.6299, \"url\": \"http://arxiv.org/abs/2407.01009v1\"}, {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"snippet\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instea\", \"score\": 0.608, \"url\": \"http://arxiv.org/abs/2405.00332v4\"}, {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"snippet\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has\", \"score\": 0.5935, \"url\": \"http://arxiv.org/abs/2401.00757v3\"}, {\"id\": \"2401.00761\", \"title\": \"Identifying the Achilles' Heel: An Iterative Method for Dynamically Uncovering Factual Errors in Large Language Models\", \"snippet\": \"Large Language Models (LLMs) like ChatGPT are foundational in various applications due to their extensive knowledge from pre-training and fine-tuning. Despite this, they are prone to generating factual and commonsense errors, raising concerns in critical areas like healthcare, journalism, and educat\", \"score\": 0.5321, \"url\": \"http://arxiv.org/abs/2401.00761v2\"}, {\"id\": \"2401.00698\", \"title\": \"Large Language Models aren't all that you need\", \"snippet\": \"This paper describes the architecture and systems built towards solving the SemEval 2023 Task 2: MultiCoNER II (Multilingual Complex Named Entity Recognition) [1]. We evaluate two approaches (a) a traditional Conditional Random Fields model and (b) a Large Language Model (LLM) fine-tuned with a cust\", \"score\": 0.5206, \"url\": \"http://arxiv.org/abs/2401.00698v1\"}]}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_189683",
+      "args": {
+       "paper_id": "2407.01009"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EroCCrcCAWkUfROz5FG98TFWg7iw4S_fRHZJ5kGFsKviLq5b8KGaQTkLgj6CPffOaPplDn9bW-JN9VXqo2X8K03OJHIKvgAdEx5pVEY2v66M55wWDjk1pyXoGOw_rhaC1xEAhnxsPFHikpDQzTLiZtvleweRYoaSPD_2t6D4vqlM9pvmwfhqzrfbxyg4A1SSQAFzBNxz45mJXvyM5U3Nf7LiOwX3zWEAxpHW-6UqVSBjDs0Jk8zIgbmk3c508Ok2HAutqUmfvolQo7SZ81yV-nuCQ66JXMJDH0mo1hqxZVIwGg2Dvv_CkPb_iz8C62B689pgYNxvwRKxyr8OItt0UMBGfSvBqwYbtbLtzt9e99Jo3VG_RP3etDRyZrGE8QBk1v-Ja-jbpbT687De27kIRI9mGZKhpozDUV24KUw="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"abstract\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers multiple reasoning pathways and verifies each step carefully, results in slower inference. This paper addresses the challenge of enabling LLMs to autonomously select between fast and slow inference methods, thereby optimizing both efficiency and effectiveness. We introduce a dynamic decision-making framework that categorizes tasks into two distinct pathways: 'Fast', designated for tasks where the LLM quickly identifies a high-confidence solution, and 'Slow', allocated for tasks that the LLM perceives as complex and for which it has low confidence in immediate solutions as well as requiring more reasoning paths to verify. Experiments on five popular reasoning benchmarks demonstrated the superiority of the DynaThink over baselines.\", \"authors\": [\"Jiabao Pan\", \"Yan Zhang\", \"Chen Zhang\", \"Zuozhu Liu\", \"Hongwei Wang\", \"Haizhou Li\"], \"published\": \"2024-07-01\", \"categories\": [\"cs.CL\"], \"url\": \"http://arxiv.org/abs/2407.01009v1\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_226128",
+      "args": {
+       "paper_id": "2401.00757"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "Eo4CCosCAWkUfROC7KoSjEgu4kfO7QQVnkl69O3O6vAF6EpTSBaRT_rglsdG_xU3S7nHYVsaCHftPt-WsMwsyPTNwoRc5VAaOi-TB0qcOkLq00A1CLvAKnJhA7nKMLmYbn-Yoa09opf7ZJmlE7ikefYYFQeeJQnhB5UPrFzKuN0PV68_pZChkKpU5HNM59V3KcH-XrXE-7h6h3kyB4yClBJpv7JOwYU8YxQ1wnAG_CcMlKXTFD-6ti5Mvfu7fyCGnyu91kugTBgiUx4eAx7lFqmt7Ne2oBZh5ojs2ITVEb7_suWQYuFHZIv4PQUEucZQIgkilnFaKI0LH7JyP0oKKorgxe7PlFc18BYcY4gNczqa"
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"abstract\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has been challenging. Traditional evaluations often prioritize accuracy on downstream tasks over direct assessments of reasoning processes. LogicAsker addresses this gap by employing a set of atomic reasoning skills grounded in propositional and predicate logic to systematically examine and improve the reasoning prowess of LLMs. Our methodology reveals significant gaps in LLMs' learning of logical rules, with identified reasoning failures ranging from 29\\\\% to 90\\\\% across different models. Moreover, we leverage these findings to construct targeted demonstration examples and fine-tune data, notably enhancing logical reasoning in models like GPT-4o by up to 5\\\\%. To our knowledge, this is the first effort to utilize test case outcomes to effectively refine LLMs' formal reasoning capabilities. We make our code, data, and results publicly available (https://github.com/yxwan123/LogicAsker) to facilitate further research and replication of our findings.\", \"authors\": [\"Yuxuan Wan\", \"Wenxuan Wang\", \"Yiliu Yang\", \"Youliang Yuan\", \"Jen-tse Huang\", \"Pinjia He\", \"Wenxiang Jiao\", \"Michael R. Lyu\"], \"published\": \"2024-01-01\", \"categories\": [\"cs.SE\", \"cs.AI\", \"cs.CL\", \"cs.LO\"], \"url\": \"http://arxiv.org/abs/2401.00757v3\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  }
+ ],
+ "systemInstruction": {
+  "parts": [
+   {
+    "text": "You answer questions about machine-learning papers using only the provided tools.\nUse search_papers to find candidates, get_paper or summarize_paper for detail.\nCite papers by arXiv id in square brackets, e.g. [2401.01234].\nIf the tools return nothing relevant, say you could not find it instead of guessing."
+   }
+  ],
+  "role": "user"
+ },
+ "tools": [
+  {
+   "functionDeclarations": [
+    {
+     "description": "Semantic search over the paper corpus. Returns ids, titles and snippets.",
+     "name": "search_papers",
+     "parameters_json_schema": {
+      "properties": {
+       "query": {
+        "description": "Natural-language search query.",
+        "minLength": 1,
+        "title": "Query",
+        "type": "string"
+       },
+       "k": {
+        "default": 5,
+        "description": "Number of papers to return.",
+        "maximum": 10,
+        "minimum": 1,
+        "title": "K",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "query"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Fetch the full abstract and metadata of one paper by arXiv id.",
+     "name": "get_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Extractive summary (first sentences of the abstract) of one paper by id.",
+     "name": "summarize_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       },
+       "max_sentences": {
+        "default": 2,
+        "maximum": 5,
+        "minimum": 1,
+        "title": "Max Sentences",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    }
+   ]
+  }
+ ],
+ "generationConfig": {}
+}
+
+===== GEMINI RESPONSE #4 (HTTP 200) =====
+{
+ "candidates": [
+  {
+   "content": {
+    "parts": [
+     {
+      "functionCall": {
+       "name": "get_paper",
+       "args": {
+        "paper_id": "2405.00332"
+       },
+       "id": "call_187900"
+      },
+      "thoughtSignature": "EpgBCpUBAWkUfRN1XQ4mfVwVyAFClGh4QgNMCnLzFJAuqLP0VywaFT2MxRnYEvE50Jgdsua4cO7iMssLsvD7YBceEw4vmBYfxhs7Ffh7NVRNmqfC3W7MMBsdf57nqN+0j7bt0Gmp3ce2blqZ05UCafCV1RrTtOwjZ9Hmem2BWXTLHRzGS0In1QlaHJk/Nr9Qcxgn7ovT74LHzmQ="
+     }
+    ],
+    "role": "model"
+   },
+   "finishReason": "STOP",
+   "index": 0,
+   "finishMessage": "Model generated function call(s)."
+  }
+ ],
+ "usageMetadata": {
+  "promptTokenCount": 2108,
+  "candidatesTokenCount": 27,
+  "totalTokenCount": 2157,
+  "promptTokensDetails": [
+   {
+    "modality": "TEXT",
+    "tokenCount": 2108
+   }
+  ],
+  "thoughtsTokenCount": 22,
+  "serviceTier": "standard"
+ },
+ "modelVersion": "gemini-3.6-flash",
+ "responseId": "xeviasOrMPLHjuMP05S4uA4"
+}
+
+===== GEMINI REQUEST #5 =====
+POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+{
+ "host": "generativelanguage.googleapis.com",
+ "accept": "*/*",
+ "accept-encoding": "gzip, deflate",
+ "connection": "keep-alive",
+ "content-type": "application/json",
+ "x-goog-api-key": "<redacted>",
+ "user-agent": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-goog-api-client": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-server-timeout": "60",
+ "content-length": "11987"
+}
+{
+ "contents": [
+  {
+   "parts": [
+    {
+     "text": "Which papers in the corpus discuss reasoning in large language models? Name one and summarize it."
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_214610",
+      "args": {
+       "query": "reasoning in large language models"
+      },
+      "name": "search_papers"
+     },
+     "thoughtSignature": "Er0CCroCAWkUfROqbzuhpB0Y8tzLns_UCeRCTeBVP0aeUpE_RR5X6iZoGmPI4cIkKUKS6PuZBItFZDSNzQy28fWJwwdOGU2BYzfuORFEQlsRMpqXETQJVlDsDqk1rrYcCeNAElf3cFb5mNbxkEKvv6UKPW-BtV42dxLNDruCGE480FqsuKP5jHWMQgiu7iil5GkA35S1bYFQ8McbgkMjYy2_rJbMbUo_iTJSY20Iijyxxh382AOHds_zqUn8XZwx0k3Sj0OzFkdet7pe5KbvF4P6A74i0d3X40HnqLX_5OTckpxZ_ilDCyFm0JGJrf2ZAnF1KEFpinXayeAKM3jA6oiy8JKeccCy6V793L_X-K9GpEhKeEdp80ZJhL9FV1tKSQp1QMBEjA3P64PnxodHQCkOY3awbxueifeTwj4jEKY="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "search_papers",
+      "response": {
+       "result": "{\"results\": [{\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"snippet\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers \", \"score\": 0.6299, \"url\": \"http://arxiv.org/abs/2407.01009v1\"}, {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"snippet\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instea\", \"score\": 0.608, \"url\": \"http://arxiv.org/abs/2405.00332v4\"}, {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"snippet\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has\", \"score\": 0.5935, \"url\": \"http://arxiv.org/abs/2401.00757v3\"}, {\"id\": \"2401.00761\", \"title\": \"Identifying the Achilles' Heel: An Iterative Method for Dynamically Uncovering Factual Errors in Large Language Models\", \"snippet\": \"Large Language Models (LLMs) like ChatGPT are foundational in various applications due to their extensive knowledge from pre-training and fine-tuning. Despite this, they are prone to generating factual and commonsense errors, raising concerns in critical areas like healthcare, journalism, and educat\", \"score\": 0.5321, \"url\": \"http://arxiv.org/abs/2401.00761v2\"}, {\"id\": \"2401.00698\", \"title\": \"Large Language Models aren't all that you need\", \"snippet\": \"This paper describes the architecture and systems built towards solving the SemEval 2023 Task 2: MultiCoNER II (Multilingual Complex Named Entity Recognition) [1]. We evaluate two approaches (a) a traditional Conditional Random Fields model and (b) a Large Language Model (LLM) fine-tuned with a cust\", \"score\": 0.5206, \"url\": \"http://arxiv.org/abs/2401.00698v1\"}]}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_189683",
+      "args": {
+       "paper_id": "2407.01009"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EroCCrcCAWkUfROz5FG98TFWg7iw4S_fRHZJ5kGFsKviLq5b8KGaQTkLgj6CPffOaPplDn9bW-JN9VXqo2X8K03OJHIKvgAdEx5pVEY2v66M55wWDjk1pyXoGOw_rhaC1xEAhnxsPFHikpDQzTLiZtvleweRYoaSPD_2t6D4vqlM9pvmwfhqzrfbxyg4A1SSQAFzBNxz45mJXvyM5U3Nf7LiOwX3zWEAxpHW-6UqVSBjDs0Jk8zIgbmk3c508Ok2HAutqUmfvolQo7SZ81yV-nuCQ66JXMJDH0mo1hqxZVIwGg2Dvv_CkPb_iz8C62B689pgYNxvwRKxyr8OItt0UMBGfSvBqwYbtbLtzt9e99Jo3VG_RP3etDRyZrGE8QBk1v-Ja-jbpbT687De27kIRI9mGZKhpozDUV24KUw="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"abstract\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers multiple reasoning pathways and verifies each step carefully, results in slower inference. This paper addresses the challenge of enabling LLMs to autonomously select between fast and slow inference methods, thereby optimizing both efficiency and effectiveness. We introduce a dynamic decision-making framework that categorizes tasks into two distinct pathways: 'Fast', designated for tasks where the LLM quickly identifies a high-confidence solution, and 'Slow', allocated for tasks that the LLM perceives as complex and for which it has low confidence in immediate solutions as well as requiring more reasoning paths to verify. Experiments on five popular reasoning benchmarks demonstrated the superiority of the DynaThink over baselines.\", \"authors\": [\"Jiabao Pan\", \"Yan Zhang\", \"Chen Zhang\", \"Zuozhu Liu\", \"Hongwei Wang\", \"Haizhou Li\"], \"published\": \"2024-07-01\", \"categories\": [\"cs.CL\"], \"url\": \"http://arxiv.org/abs/2407.01009v1\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_226128",
+      "args": {
+       "paper_id": "2401.00757"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "Eo4CCosCAWkUfROC7KoSjEgu4kfO7QQVnkl69O3O6vAF6EpTSBaRT_rglsdG_xU3S7nHYVsaCHftPt-WsMwsyPTNwoRc5VAaOi-TB0qcOkLq00A1CLvAKnJhA7nKMLmYbn-Yoa09opf7ZJmlE7ikefYYFQeeJQnhB5UPrFzKuN0PV68_pZChkKpU5HNM59V3KcH-XrXE-7h6h3kyB4yClBJpv7JOwYU8YxQ1wnAG_CcMlKXTFD-6ti5Mvfu7fyCGnyu91kugTBgiUx4eAx7lFqmt7Ne2oBZh5ojs2ITVEb7_suWQYuFHZIv4PQUEucZQIgkilnFaKI0LH7JyP0oKKorgxe7PlFc18BYcY4gNczqa"
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"abstract\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has been challenging. Traditional evaluations often prioritize accuracy on downstream tasks over direct assessments of reasoning processes. LogicAsker addresses this gap by employing a set of atomic reasoning skills grounded in propositional and predicate logic to systematically examine and improve the reasoning prowess of LLMs. Our methodology reveals significant gaps in LLMs' learning of logical rules, with identified reasoning failures ranging from 29\\\\% to 90\\\\% across different models. Moreover, we leverage these findings to construct targeted demonstration examples and fine-tune data, notably enhancing logical reasoning in models like GPT-4o by up to 5\\\\%. To our knowledge, this is the first effort to utilize test case outcomes to effectively refine LLMs' formal reasoning capabilities. We make our code, data, and results publicly available (https://github.com/yxwan123/LogicAsker) to facilitate further research and replication of our findings.\", \"authors\": [\"Yuxuan Wan\", \"Wenxuan Wang\", \"Yiliu Yang\", \"Youliang Yuan\", \"Jen-tse Huang\", \"Pinjia He\", \"Wenxiang Jiao\", \"Michael R. Lyu\"], \"published\": \"2024-01-01\", \"categories\": [\"cs.SE\", \"cs.AI\", \"cs.CL\", \"cs.LO\"], \"url\": \"http://arxiv.org/abs/2401.00757v3\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_187900",
+      "args": {
+       "paper_id": "2405.00332"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EpgBCpUBAWkUfRN1XQ4mfVwVyAFClGh4QgNMCnLzFJAuqLP0VywaFT2MxRnYEvE50Jgdsua4cO7iMssLsvD7YBceEw4vmBYfxhs7Ffh7NVRNmqfC3W7MMBsdf57nqN-0j7bt0Gmp3ce2blqZ05UCafCV1RrTtOwjZ9Hmem2BWXTLHRzGS0In1QlaHJk_Nr9Qcxgn7ovT74LHzmQ="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"abstract\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instead of true reasoning ability. To investigate this claim rigorously, we commission Grade School Math 1000 (GSM1k). GSM1k is designed to mirror the style and complexity of the established GSM8k benchmark, the gold standard for measuring elementary mathematical reasoning. We ensure that the two benchmarks are comparable across important metrics such as human solve rates, number of steps in solution, answer magnitude, and more. When evaluating leading open- and closed-source LLMs on GSM1k, we observe accuracy drops of up to 8%, with several families of models showing evidence of systematic overfitting across almost all model sizes. Further analysis suggests a positive relationship (Spearman's r^2 = 0.36) between a model's probability of generating an example from GSM8k and its performance gap between GSM8k and GSM1k, suggesting that some models may have partially memorized GSM8k. Nevertheless, many models, especially those on the frontier, show minimal signs of overfitting, and all models broadly demonstrate generalization to novel math problems guaranteed to not be in their training data.\", \"authors\": [\"Hugh Zhang\", \"Jeff Da\", \"Dean Lee\", \"Vaughn Robinson\", \"Catherine Wu\", \"Will Song\", \"Tiffany Zhao\", \"Pranav Raja\", \"Charlotte Zhuang\", \"Dylan Slack\", \"Qin Lyu\", \"Sean Hendryx\", \"Russell Kaplan\", \"Michele Lunati\", \"Summer Yue\"], \"published\": \"2024-05-01\", \"categories\": [\"cs.CL\", \"cs.AI\", \"cs.LG\"], \"url\": \"http://arxiv.org/abs/2405.00332v4\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  }
+ ],
+ "systemInstruction": {
+  "parts": [
+   {
+    "text": "You answer questions about machine-learning papers using only the provided tools.\nUse search_papers to find candidates, get_paper or summarize_paper for detail.\nCite papers by arXiv id in square brackets, e.g. [2401.01234].\nIf the tools return nothing relevant, say you could not find it instead of guessing."
+   }
+  ],
+  "role": "user"
+ },
+ "tools": [
+  {
+   "functionDeclarations": [
+    {
+     "description": "Semantic search over the paper corpus. Returns ids, titles and snippets.",
+     "name": "search_papers",
+     "parameters_json_schema": {
+      "properties": {
+       "query": {
+        "description": "Natural-language search query.",
+        "minLength": 1,
+        "title": "Query",
+        "type": "string"
+       },
+       "k": {
+        "default": 5,
+        "description": "Number of papers to return.",
+        "maximum": 10,
+        "minimum": 1,
+        "title": "K",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "query"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Fetch the full abstract and metadata of one paper by arXiv id.",
+     "name": "get_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Extractive summary (first sentences of the abstract) of one paper by id.",
+     "name": "summarize_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       },
+       "max_sentences": {
+        "default": 2,
+        "maximum": 5,
+        "minimum": 1,
+        "title": "Max Sentences",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    }
+   ]
+  }
+ ],
+ "generationConfig": {}
+}
+
+===== GEMINI RESPONSE #5 (HTTP 429) =====
+{
+ "error": {
+  "code": 429,
+  "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.6-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 28.293906594s.",
+  "status": "RESOURCE_EXHAUSTED",
+  "details": [
+   {
+    "@type": "type.googleapis.com/google.rpc.Help",
+    "links": [
+     {
+      "description": "Learn more about Gemini API quotas",
+      "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
+     }
+    ]
+   },
+   {
+    "@type": "type.googleapis.com/google.rpc.QuotaFailure",
+    "violations": [
+     {
+      "description": "Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.",
+      "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_requests",
+      "quotaId": "GenerateRequestsPerMinutePerProjectPerModel-FreeTier",
+      "quotaDimensions": {
+       "location": "global",
+       "model": "gemini-3.6-flash"
+      },
+      "quotaValue": "5"
+     }
+    ]
+   },
+   {
+    "@type": "type.googleapis.com/google.rpc.RetryInfo",
+    "retryDelay": "28s"
+   }
+  ]
+ }
+}
+LLM call failed (429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.6-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 28.293906594s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '28s'}]}}), retry 1/4 in 0.6s
+
+===== GEMINI REQUEST #6 =====
+POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+{
+ "host": "generativelanguage.googleapis.com",
+ "accept": "*/*",
+ "accept-encoding": "gzip, deflate",
+ "connection": "keep-alive",
+ "content-type": "application/json",
+ "x-goog-api-key": "<redacted>",
+ "user-agent": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-goog-api-client": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-server-timeout": "60",
+ "content-length": "11987"
+}
+{
+ "contents": [
+  {
+   "parts": [
+    {
+     "text": "Which papers in the corpus discuss reasoning in large language models? Name one and summarize it."
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_214610",
+      "args": {
+       "query": "reasoning in large language models"
+      },
+      "name": "search_papers"
+     },
+     "thoughtSignature": "Er0CCroCAWkUfROqbzuhpB0Y8tzLns_UCeRCTeBVP0aeUpE_RR5X6iZoGmPI4cIkKUKS6PuZBItFZDSNzQy28fWJwwdOGU2BYzfuORFEQlsRMpqXETQJVlDsDqk1rrYcCeNAElf3cFb5mNbxkEKvv6UKPW-BtV42dxLNDruCGE480FqsuKP5jHWMQgiu7iil5GkA35S1bYFQ8McbgkMjYy2_rJbMbUo_iTJSY20Iijyxxh382AOHds_zqUn8XZwx0k3Sj0OzFkdet7pe5KbvF4P6A74i0d3X40HnqLX_5OTckpxZ_ilDCyFm0JGJrf2ZAnF1KEFpinXayeAKM3jA6oiy8JKeccCy6V793L_X-K9GpEhKeEdp80ZJhL9FV1tKSQp1QMBEjA3P64PnxodHQCkOY3awbxueifeTwj4jEKY="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "search_papers",
+      "response": {
+       "result": "{\"results\": [{\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"snippet\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers \", \"score\": 0.6299, \"url\": \"http://arxiv.org/abs/2407.01009v1\"}, {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"snippet\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instea\", \"score\": 0.608, \"url\": \"http://arxiv.org/abs/2405.00332v4\"}, {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"snippet\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has\", \"score\": 0.5935, \"url\": \"http://arxiv.org/abs/2401.00757v3\"}, {\"id\": \"2401.00761\", \"title\": \"Identifying the Achilles' Heel: An Iterative Method for Dynamically Uncovering Factual Errors in Large Language Models\", \"snippet\": \"Large Language Models (LLMs) like ChatGPT are foundational in various applications due to their extensive knowledge from pre-training and fine-tuning. Despite this, they are prone to generating factual and commonsense errors, raising concerns in critical areas like healthcare, journalism, and educat\", \"score\": 0.5321, \"url\": \"http://arxiv.org/abs/2401.00761v2\"}, {\"id\": \"2401.00698\", \"title\": \"Large Language Models aren't all that you need\", \"snippet\": \"This paper describes the architecture and systems built towards solving the SemEval 2023 Task 2: MultiCoNER II (Multilingual Complex Named Entity Recognition) [1]. We evaluate two approaches (a) a traditional Conditional Random Fields model and (b) a Large Language Model (LLM) fine-tuned with a cust\", \"score\": 0.5206, \"url\": \"http://arxiv.org/abs/2401.00698v1\"}]}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_189683",
+      "args": {
+       "paper_id": "2407.01009"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EroCCrcCAWkUfROz5FG98TFWg7iw4S_fRHZJ5kGFsKviLq5b8KGaQTkLgj6CPffOaPplDn9bW-JN9VXqo2X8K03OJHIKvgAdEx5pVEY2v66M55wWDjk1pyXoGOw_rhaC1xEAhnxsPFHikpDQzTLiZtvleweRYoaSPD_2t6D4vqlM9pvmwfhqzrfbxyg4A1SSQAFzBNxz45mJXvyM5U3Nf7LiOwX3zWEAxpHW-6UqVSBjDs0Jk8zIgbmk3c508Ok2HAutqUmfvolQo7SZ81yV-nuCQ66JXMJDH0mo1hqxZVIwGg2Dvv_CkPb_iz8C62B689pgYNxvwRKxyr8OItt0UMBGfSvBqwYbtbLtzt9e99Jo3VG_RP3etDRyZrGE8QBk1v-Ja-jbpbT687De27kIRI9mGZKhpozDUV24KUw="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"abstract\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers multiple reasoning pathways and verifies each step carefully, results in slower inference. This paper addresses the challenge of enabling LLMs to autonomously select between fast and slow inference methods, thereby optimizing both efficiency and effectiveness. We introduce a dynamic decision-making framework that categorizes tasks into two distinct pathways: 'Fast', designated for tasks where the LLM quickly identifies a high-confidence solution, and 'Slow', allocated for tasks that the LLM perceives as complex and for which it has low confidence in immediate solutions as well as requiring more reasoning paths to verify. Experiments on five popular reasoning benchmarks demonstrated the superiority of the DynaThink over baselines.\", \"authors\": [\"Jiabao Pan\", \"Yan Zhang\", \"Chen Zhang\", \"Zuozhu Liu\", \"Hongwei Wang\", \"Haizhou Li\"], \"published\": \"2024-07-01\", \"categories\": [\"cs.CL\"], \"url\": \"http://arxiv.org/abs/2407.01009v1\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_226128",
+      "args": {
+       "paper_id": "2401.00757"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "Eo4CCosCAWkUfROC7KoSjEgu4kfO7QQVnkl69O3O6vAF6EpTSBaRT_rglsdG_xU3S7nHYVsaCHftPt-WsMwsyPTNwoRc5VAaOi-TB0qcOkLq00A1CLvAKnJhA7nKMLmYbn-Yoa09opf7ZJmlE7ikefYYFQeeJQnhB5UPrFzKuN0PV68_pZChkKpU5HNM59V3KcH-XrXE-7h6h3kyB4yClBJpv7JOwYU8YxQ1wnAG_CcMlKXTFD-6ti5Mvfu7fyCGnyu91kugTBgiUx4eAx7lFqmt7Ne2oBZh5ojs2ITVEb7_suWQYuFHZIv4PQUEucZQIgkilnFaKI0LH7JyP0oKKorgxe7PlFc18BYcY4gNczqa"
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"abstract\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has been challenging. Traditional evaluations often prioritize accuracy on downstream tasks over direct assessments of reasoning processes. LogicAsker addresses this gap by employing a set of atomic reasoning skills grounded in propositional and predicate logic to systematically examine and improve the reasoning prowess of LLMs. Our methodology reveals significant gaps in LLMs' learning of logical rules, with identified reasoning failures ranging from 29\\\\% to 90\\\\% across different models. Moreover, we leverage these findings to construct targeted demonstration examples and fine-tune data, notably enhancing logical reasoning in models like GPT-4o by up to 5\\\\%. To our knowledge, this is the first effort to utilize test case outcomes to effectively refine LLMs' formal reasoning capabilities. We make our code, data, and results publicly available (https://github.com/yxwan123/LogicAsker) to facilitate further research and replication of our findings.\", \"authors\": [\"Yuxuan Wan\", \"Wenxuan Wang\", \"Yiliu Yang\", \"Youliang Yuan\", \"Jen-tse Huang\", \"Pinjia He\", \"Wenxiang Jiao\", \"Michael R. Lyu\"], \"published\": \"2024-01-01\", \"categories\": [\"cs.SE\", \"cs.AI\", \"cs.CL\", \"cs.LO\"], \"url\": \"http://arxiv.org/abs/2401.00757v3\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_187900",
+      "args": {
+       "paper_id": "2405.00332"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EpgBCpUBAWkUfRN1XQ4mfVwVyAFClGh4QgNMCnLzFJAuqLP0VywaFT2MxRnYEvE50Jgdsua4cO7iMssLsvD7YBceEw4vmBYfxhs7Ffh7NVRNmqfC3W7MMBsdf57nqN-0j7bt0Gmp3ce2blqZ05UCafCV1RrTtOwjZ9Hmem2BWXTLHRzGS0In1QlaHJk_Nr9Qcxgn7ovT74LHzmQ="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"abstract\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instead of true reasoning ability. To investigate this claim rigorously, we commission Grade School Math 1000 (GSM1k). GSM1k is designed to mirror the style and complexity of the established GSM8k benchmark, the gold standard for measuring elementary mathematical reasoning. We ensure that the two benchmarks are comparable across important metrics such as human solve rates, number of steps in solution, answer magnitude, and more. When evaluating leading open- and closed-source LLMs on GSM1k, we observe accuracy drops of up to 8%, with several families of models showing evidence of systematic overfitting across almost all model sizes. Further analysis suggests a positive relationship (Spearman's r^2 = 0.36) between a model's probability of generating an example from GSM8k and its performance gap between GSM8k and GSM1k, suggesting that some models may have partially memorized GSM8k. Nevertheless, many models, especially those on the frontier, show minimal signs of overfitting, and all models broadly demonstrate generalization to novel math problems guaranteed to not be in their training data.\", \"authors\": [\"Hugh Zhang\", \"Jeff Da\", \"Dean Lee\", \"Vaughn Robinson\", \"Catherine Wu\", \"Will Song\", \"Tiffany Zhao\", \"Pranav Raja\", \"Charlotte Zhuang\", \"Dylan Slack\", \"Qin Lyu\", \"Sean Hendryx\", \"Russell Kaplan\", \"Michele Lunati\", \"Summer Yue\"], \"published\": \"2024-05-01\", \"categories\": [\"cs.CL\", \"cs.AI\", \"cs.LG\"], \"url\": \"http://arxiv.org/abs/2405.00332v4\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  }
+ ],
+ "systemInstruction": {
+  "parts": [
+   {
+    "text": "You answer questions about machine-learning papers using only the provided tools.\nUse search_papers to find candidates, get_paper or summarize_paper for detail.\nCite papers by arXiv id in square brackets, e.g. [2401.01234].\nIf the tools return nothing relevant, say you could not find it instead of guessing."
+   }
+  ],
+  "role": "user"
+ },
+ "tools": [
+  {
+   "functionDeclarations": [
+    {
+     "description": "Semantic search over the paper corpus. Returns ids, titles and snippets.",
+     "name": "search_papers",
+     "parameters_json_schema": {
+      "properties": {
+       "query": {
+        "description": "Natural-language search query.",
+        "minLength": 1,
+        "title": "Query",
+        "type": "string"
+       },
+       "k": {
+        "default": 5,
+        "description": "Number of papers to return.",
+        "maximum": 10,
+        "minimum": 1,
+        "title": "K",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "query"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Fetch the full abstract and metadata of one paper by arXiv id.",
+     "name": "get_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Extractive summary (first sentences of the abstract) of one paper by id.",
+     "name": "summarize_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       },
+       "max_sentences": {
+        "default": 2,
+        "maximum": 5,
+        "minimum": 1,
+        "title": "Max Sentences",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    }
+   ]
+  }
+ ],
+ "generationConfig": {}
+}
+
+===== GEMINI RESPONSE #6 (HTTP 429) =====
+{
+ "error": {
+  "code": 429,
+  "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.6-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 27.399591565s.",
+  "status": "RESOURCE_EXHAUSTED",
+  "details": [
+   {
+    "@type": "type.googleapis.com/google.rpc.Help",
+    "links": [
+     {
+      "description": "Learn more about Gemini API quotas",
+      "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
+     }
+    ]
+   },
+   {
+    "@type": "type.googleapis.com/google.rpc.QuotaFailure",
+    "violations": [
+     {
+      "description": "Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.",
+      "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_requests",
+      "quotaId": "GenerateRequestsPerMinutePerProjectPerModel-FreeTier",
+      "quotaDimensions": {
+       "location": "global",
+       "model": "gemini-3.6-flash"
+      },
+      "quotaValue": "5"
+     }
+    ]
+   },
+   {
+    "@type": "type.googleapis.com/google.rpc.RetryInfo",
+    "retryDelay": "27s"
+   }
+  ]
+ }
+}
+LLM call failed (429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.6-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 27.399591565s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '27s'}]}}), retry 2/4 in 2.0s
+
+===== GEMINI REQUEST #7 =====
+POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+{
+ "host": "generativelanguage.googleapis.com",
+ "accept": "*/*",
+ "accept-encoding": "gzip, deflate",
+ "connection": "keep-alive",
+ "content-type": "application/json",
+ "x-goog-api-key": "<redacted>",
+ "user-agent": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-goog-api-client": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-server-timeout": "60",
+ "content-length": "11987"
+}
+{
+ "contents": [
+  {
+   "parts": [
+    {
+     "text": "Which papers in the corpus discuss reasoning in large language models? Name one and summarize it."
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_214610",
+      "args": {
+       "query": "reasoning in large language models"
+      },
+      "name": "search_papers"
+     },
+     "thoughtSignature": "Er0CCroCAWkUfROqbzuhpB0Y8tzLns_UCeRCTeBVP0aeUpE_RR5X6iZoGmPI4cIkKUKS6PuZBItFZDSNzQy28fWJwwdOGU2BYzfuORFEQlsRMpqXETQJVlDsDqk1rrYcCeNAElf3cFb5mNbxkEKvv6UKPW-BtV42dxLNDruCGE480FqsuKP5jHWMQgiu7iil5GkA35S1bYFQ8McbgkMjYy2_rJbMbUo_iTJSY20Iijyxxh382AOHds_zqUn8XZwx0k3Sj0OzFkdet7pe5KbvF4P6A74i0d3X40HnqLX_5OTckpxZ_ilDCyFm0JGJrf2ZAnF1KEFpinXayeAKM3jA6oiy8JKeccCy6V793L_X-K9GpEhKeEdp80ZJhL9FV1tKSQp1QMBEjA3P64PnxodHQCkOY3awbxueifeTwj4jEKY="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "search_papers",
+      "response": {
+       "result": "{\"results\": [{\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"snippet\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers \", \"score\": 0.6299, \"url\": \"http://arxiv.org/abs/2407.01009v1\"}, {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"snippet\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instea\", \"score\": 0.608, \"url\": \"http://arxiv.org/abs/2405.00332v4\"}, {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"snippet\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has\", \"score\": 0.5935, \"url\": \"http://arxiv.org/abs/2401.00757v3\"}, {\"id\": \"2401.00761\", \"title\": \"Identifying the Achilles' Heel: An Iterative Method for Dynamically Uncovering Factual Errors in Large Language Models\", \"snippet\": \"Large Language Models (LLMs) like ChatGPT are foundational in various applications due to their extensive knowledge from pre-training and fine-tuning. Despite this, they are prone to generating factual and commonsense errors, raising concerns in critical areas like healthcare, journalism, and educat\", \"score\": 0.5321, \"url\": \"http://arxiv.org/abs/2401.00761v2\"}, {\"id\": \"2401.00698\", \"title\": \"Large Language Models aren't all that you need\", \"snippet\": \"This paper describes the architecture and systems built towards solving the SemEval 2023 Task 2: MultiCoNER II (Multilingual Complex Named Entity Recognition) [1]. We evaluate two approaches (a) a traditional Conditional Random Fields model and (b) a Large Language Model (LLM) fine-tuned with a cust\", \"score\": 0.5206, \"url\": \"http://arxiv.org/abs/2401.00698v1\"}]}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_189683",
+      "args": {
+       "paper_id": "2407.01009"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EroCCrcCAWkUfROz5FG98TFWg7iw4S_fRHZJ5kGFsKviLq5b8KGaQTkLgj6CPffOaPplDn9bW-JN9VXqo2X8K03OJHIKvgAdEx5pVEY2v66M55wWDjk1pyXoGOw_rhaC1xEAhnxsPFHikpDQzTLiZtvleweRYoaSPD_2t6D4vqlM9pvmwfhqzrfbxyg4A1SSQAFzBNxz45mJXvyM5U3Nf7LiOwX3zWEAxpHW-6UqVSBjDs0Jk8zIgbmk3c508Ok2HAutqUmfvolQo7SZ81yV-nuCQ66JXMJDH0mo1hqxZVIwGg2Dvv_CkPb_iz8C62B689pgYNxvwRKxyr8OItt0UMBGfSvBqwYbtbLtzt9e99Jo3VG_RP3etDRyZrGE8QBk1v-Ja-jbpbT687De27kIRI9mGZKhpozDUV24KUw="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"abstract\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers multiple reasoning pathways and verifies each step carefully, results in slower inference. This paper addresses the challenge of enabling LLMs to autonomously select between fast and slow inference methods, thereby optimizing both efficiency and effectiveness. We introduce a dynamic decision-making framework that categorizes tasks into two distinct pathways: 'Fast', designated for tasks where the LLM quickly identifies a high-confidence solution, and 'Slow', allocated for tasks that the LLM perceives as complex and for which it has low confidence in immediate solutions as well as requiring more reasoning paths to verify. Experiments on five popular reasoning benchmarks demonstrated the superiority of the DynaThink over baselines.\", \"authors\": [\"Jiabao Pan\", \"Yan Zhang\", \"Chen Zhang\", \"Zuozhu Liu\", \"Hongwei Wang\", \"Haizhou Li\"], \"published\": \"2024-07-01\", \"categories\": [\"cs.CL\"], \"url\": \"http://arxiv.org/abs/2407.01009v1\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_226128",
+      "args": {
+       "paper_id": "2401.00757"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "Eo4CCosCAWkUfROC7KoSjEgu4kfO7QQVnkl69O3O6vAF6EpTSBaRT_rglsdG_xU3S7nHYVsaCHftPt-WsMwsyPTNwoRc5VAaOi-TB0qcOkLq00A1CLvAKnJhA7nKMLmYbn-Yoa09opf7ZJmlE7ikefYYFQeeJQnhB5UPrFzKuN0PV68_pZChkKpU5HNM59V3KcH-XrXE-7h6h3kyB4yClBJpv7JOwYU8YxQ1wnAG_CcMlKXTFD-6ti5Mvfu7fyCGnyu91kugTBgiUx4eAx7lFqmt7Ne2oBZh5ojs2ITVEb7_suWQYuFHZIv4PQUEucZQIgkilnFaKI0LH7JyP0oKKorgxe7PlFc18BYcY4gNczqa"
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"abstract\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has been challenging. Traditional evaluations often prioritize accuracy on downstream tasks over direct assessments of reasoning processes. LogicAsker addresses this gap by employing a set of atomic reasoning skills grounded in propositional and predicate logic to systematically examine and improve the reasoning prowess of LLMs. Our methodology reveals significant gaps in LLMs' learning of logical rules, with identified reasoning failures ranging from 29\\\\% to 90\\\\% across different models. Moreover, we leverage these findings to construct targeted demonstration examples and fine-tune data, notably enhancing logical reasoning in models like GPT-4o by up to 5\\\\%. To our knowledge, this is the first effort to utilize test case outcomes to effectively refine LLMs' formal reasoning capabilities. We make our code, data, and results publicly available (https://github.com/yxwan123/LogicAsker) to facilitate further research and replication of our findings.\", \"authors\": [\"Yuxuan Wan\", \"Wenxuan Wang\", \"Yiliu Yang\", \"Youliang Yuan\", \"Jen-tse Huang\", \"Pinjia He\", \"Wenxiang Jiao\", \"Michael R. Lyu\"], \"published\": \"2024-01-01\", \"categories\": [\"cs.SE\", \"cs.AI\", \"cs.CL\", \"cs.LO\"], \"url\": \"http://arxiv.org/abs/2401.00757v3\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_187900",
+      "args": {
+       "paper_id": "2405.00332"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EpgBCpUBAWkUfRN1XQ4mfVwVyAFClGh4QgNMCnLzFJAuqLP0VywaFT2MxRnYEvE50Jgdsua4cO7iMssLsvD7YBceEw4vmBYfxhs7Ffh7NVRNmqfC3W7MMBsdf57nqN-0j7bt0Gmp3ce2blqZ05UCafCV1RrTtOwjZ9Hmem2BWXTLHRzGS0In1QlaHJk_Nr9Qcxgn7ovT74LHzmQ="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"abstract\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instead of true reasoning ability. To investigate this claim rigorously, we commission Grade School Math 1000 (GSM1k). GSM1k is designed to mirror the style and complexity of the established GSM8k benchmark, the gold standard for measuring elementary mathematical reasoning. We ensure that the two benchmarks are comparable across important metrics such as human solve rates, number of steps in solution, answer magnitude, and more. When evaluating leading open- and closed-source LLMs on GSM1k, we observe accuracy drops of up to 8%, with several families of models showing evidence of systematic overfitting across almost all model sizes. Further analysis suggests a positive relationship (Spearman's r^2 = 0.36) between a model's probability of generating an example from GSM8k and its performance gap between GSM8k and GSM1k, suggesting that some models may have partially memorized GSM8k. Nevertheless, many models, especially those on the frontier, show minimal signs of overfitting, and all models broadly demonstrate generalization to novel math problems guaranteed to not be in their training data.\", \"authors\": [\"Hugh Zhang\", \"Jeff Da\", \"Dean Lee\", \"Vaughn Robinson\", \"Catherine Wu\", \"Will Song\", \"Tiffany Zhao\", \"Pranav Raja\", \"Charlotte Zhuang\", \"Dylan Slack\", \"Qin Lyu\", \"Sean Hendryx\", \"Russell Kaplan\", \"Michele Lunati\", \"Summer Yue\"], \"published\": \"2024-05-01\", \"categories\": [\"cs.CL\", \"cs.AI\", \"cs.LG\"], \"url\": \"http://arxiv.org/abs/2405.00332v4\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  }
+ ],
+ "systemInstruction": {
+  "parts": [
+   {
+    "text": "You answer questions about machine-learning papers using only the provided tools.\nUse search_papers to find candidates, get_paper or summarize_paper for detail.\nCite papers by arXiv id in square brackets, e.g. [2401.01234].\nIf the tools return nothing relevant, say you could not find it instead of guessing."
+   }
+  ],
+  "role": "user"
+ },
+ "tools": [
+  {
+   "functionDeclarations": [
+    {
+     "description": "Semantic search over the paper corpus. Returns ids, titles and snippets.",
+     "name": "search_papers",
+     "parameters_json_schema": {
+      "properties": {
+       "query": {
+        "description": "Natural-language search query.",
+        "minLength": 1,
+        "title": "Query",
+        "type": "string"
+       },
+       "k": {
+        "default": 5,
+        "description": "Number of papers to return.",
+        "maximum": 10,
+        "minimum": 1,
+        "title": "K",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "query"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Fetch the full abstract and metadata of one paper by arXiv id.",
+     "name": "get_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Extractive summary (first sentences of the abstract) of one paper by id.",
+     "name": "summarize_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       },
+       "max_sentences": {
+        "default": 2,
+        "maximum": 5,
+        "minimum": 1,
+        "title": "Max Sentences",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    }
+   ]
+  }
+ ],
+ "generationConfig": {}
+}
+
+===== GEMINI RESPONSE #7 (HTTP 429) =====
+{
+ "error": {
+  "code": 429,
+  "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.6-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 25.026901119s.",
+  "status": "RESOURCE_EXHAUSTED",
+  "details": [
+   {
+    "@type": "type.googleapis.com/google.rpc.Help",
+    "links": [
+     {
+      "description": "Learn more about Gemini API quotas",
+      "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
+     }
+    ]
+   },
+   {
+    "@type": "type.googleapis.com/google.rpc.QuotaFailure",
+    "violations": [
+     {
+      "description": "Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.",
+      "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_requests",
+      "quotaId": "GenerateRequestsPerMinutePerProjectPerModel-FreeTier",
+      "quotaDimensions": {
+       "location": "global",
+       "model": "gemini-3.6-flash"
+      },
+      "quotaValue": "5"
+     }
+    ]
+   },
+   {
+    "@type": "type.googleapis.com/google.rpc.RetryInfo",
+    "retryDelay": "25s"
+   }
+  ]
+ }
+}
+LLM call failed (429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.6-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 25.026901119s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '25s'}]}}), retry 3/4 in 3.3s
+
+===== GEMINI REQUEST #8 =====
+POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+{
+ "host": "generativelanguage.googleapis.com",
+ "accept": "*/*",
+ "accept-encoding": "gzip, deflate",
+ "connection": "keep-alive",
+ "content-type": "application/json",
+ "x-goog-api-key": "<redacted>",
+ "user-agent": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-goog-api-client": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-server-timeout": "60",
+ "content-length": "11987"
+}
+{
+ "contents": [
+  {
+   "parts": [
+    {
+     "text": "Which papers in the corpus discuss reasoning in large language models? Name one and summarize it."
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_214610",
+      "args": {
+       "query": "reasoning in large language models"
+      },
+      "name": "search_papers"
+     },
+     "thoughtSignature": "Er0CCroCAWkUfROqbzuhpB0Y8tzLns_UCeRCTeBVP0aeUpE_RR5X6iZoGmPI4cIkKUKS6PuZBItFZDSNzQy28fWJwwdOGU2BYzfuORFEQlsRMpqXETQJVlDsDqk1rrYcCeNAElf3cFb5mNbxkEKvv6UKPW-BtV42dxLNDruCGE480FqsuKP5jHWMQgiu7iil5GkA35S1bYFQ8McbgkMjYy2_rJbMbUo_iTJSY20Iijyxxh382AOHds_zqUn8XZwx0k3Sj0OzFkdet7pe5KbvF4P6A74i0d3X40HnqLX_5OTckpxZ_ilDCyFm0JGJrf2ZAnF1KEFpinXayeAKM3jA6oiy8JKeccCy6V793L_X-K9GpEhKeEdp80ZJhL9FV1tKSQp1QMBEjA3P64PnxodHQCkOY3awbxueifeTwj4jEKY="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "search_papers",
+      "response": {
+       "result": "{\"results\": [{\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"snippet\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers \", \"score\": 0.6299, \"url\": \"http://arxiv.org/abs/2407.01009v1\"}, {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"snippet\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instea\", \"score\": 0.608, \"url\": \"http://arxiv.org/abs/2405.00332v4\"}, {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"snippet\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has\", \"score\": 0.5935, \"url\": \"http://arxiv.org/abs/2401.00757v3\"}, {\"id\": \"2401.00761\", \"title\": \"Identifying the Achilles' Heel: An Iterative Method for Dynamically Uncovering Factual Errors in Large Language Models\", \"snippet\": \"Large Language Models (LLMs) like ChatGPT are foundational in various applications due to their extensive knowledge from pre-training and fine-tuning. Despite this, they are prone to generating factual and commonsense errors, raising concerns in critical areas like healthcare, journalism, and educat\", \"score\": 0.5321, \"url\": \"http://arxiv.org/abs/2401.00761v2\"}, {\"id\": \"2401.00698\", \"title\": \"Large Language Models aren't all that you need\", \"snippet\": \"This paper describes the architecture and systems built towards solving the SemEval 2023 Task 2: MultiCoNER II (Multilingual Complex Named Entity Recognition) [1]. We evaluate two approaches (a) a traditional Conditional Random Fields model and (b) a Large Language Model (LLM) fine-tuned with a cust\", \"score\": 0.5206, \"url\": \"http://arxiv.org/abs/2401.00698v1\"}]}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_189683",
+      "args": {
+       "paper_id": "2407.01009"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EroCCrcCAWkUfROz5FG98TFWg7iw4S_fRHZJ5kGFsKviLq5b8KGaQTkLgj6CPffOaPplDn9bW-JN9VXqo2X8K03OJHIKvgAdEx5pVEY2v66M55wWDjk1pyXoGOw_rhaC1xEAhnxsPFHikpDQzTLiZtvleweRYoaSPD_2t6D4vqlM9pvmwfhqzrfbxyg4A1SSQAFzBNxz45mJXvyM5U3Nf7LiOwX3zWEAxpHW-6UqVSBjDs0Jk8zIgbmk3c508Ok2HAutqUmfvolQo7SZ81yV-nuCQ66JXMJDH0mo1hqxZVIwGg2Dvv_CkPb_iz8C62B689pgYNxvwRKxyr8OItt0UMBGfSvBqwYbtbLtzt9e99Jo3VG_RP3etDRyZrGE8QBk1v-Ja-jbpbT687De27kIRI9mGZKhpozDUV24KUw="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"abstract\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers multiple reasoning pathways and verifies each step carefully, results in slower inference. This paper addresses the challenge of enabling LLMs to autonomously select between fast and slow inference methods, thereby optimizing both efficiency and effectiveness. We introduce a dynamic decision-making framework that categorizes tasks into two distinct pathways: 'Fast', designated for tasks where the LLM quickly identifies a high-confidence solution, and 'Slow', allocated for tasks that the LLM perceives as complex and for which it has low confidence in immediate solutions as well as requiring more reasoning paths to verify. Experiments on five popular reasoning benchmarks demonstrated the superiority of the DynaThink over baselines.\", \"authors\": [\"Jiabao Pan\", \"Yan Zhang\", \"Chen Zhang\", \"Zuozhu Liu\", \"Hongwei Wang\", \"Haizhou Li\"], \"published\": \"2024-07-01\", \"categories\": [\"cs.CL\"], \"url\": \"http://arxiv.org/abs/2407.01009v1\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_226128",
+      "args": {
+       "paper_id": "2401.00757"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "Eo4CCosCAWkUfROC7KoSjEgu4kfO7QQVnkl69O3O6vAF6EpTSBaRT_rglsdG_xU3S7nHYVsaCHftPt-WsMwsyPTNwoRc5VAaOi-TB0qcOkLq00A1CLvAKnJhA7nKMLmYbn-Yoa09opf7ZJmlE7ikefYYFQeeJQnhB5UPrFzKuN0PV68_pZChkKpU5HNM59V3KcH-XrXE-7h6h3kyB4yClBJpv7JOwYU8YxQ1wnAG_CcMlKXTFD-6ti5Mvfu7fyCGnyu91kugTBgiUx4eAx7lFqmt7Ne2oBZh5ojs2ITVEb7_suWQYuFHZIv4PQUEucZQIgkilnFaKI0LH7JyP0oKKorgxe7PlFc18BYcY4gNczqa"
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"abstract\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has been challenging. Traditional evaluations often prioritize accuracy on downstream tasks over direct assessments of reasoning processes. LogicAsker addresses this gap by employing a set of atomic reasoning skills grounded in propositional and predicate logic to systematically examine and improve the reasoning prowess of LLMs. Our methodology reveals significant gaps in LLMs' learning of logical rules, with identified reasoning failures ranging from 29\\\\% to 90\\\\% across different models. Moreover, we leverage these findings to construct targeted demonstration examples and fine-tune data, notably enhancing logical reasoning in models like GPT-4o by up to 5\\\\%. To our knowledge, this is the first effort to utilize test case outcomes to effectively refine LLMs' formal reasoning capabilities. We make our code, data, and results publicly available (https://github.com/yxwan123/LogicAsker) to facilitate further research and replication of our findings.\", \"authors\": [\"Yuxuan Wan\", \"Wenxuan Wang\", \"Yiliu Yang\", \"Youliang Yuan\", \"Jen-tse Huang\", \"Pinjia He\", \"Wenxiang Jiao\", \"Michael R. Lyu\"], \"published\": \"2024-01-01\", \"categories\": [\"cs.SE\", \"cs.AI\", \"cs.CL\", \"cs.LO\"], \"url\": \"http://arxiv.org/abs/2401.00757v3\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_187900",
+      "args": {
+       "paper_id": "2405.00332"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EpgBCpUBAWkUfRN1XQ4mfVwVyAFClGh4QgNMCnLzFJAuqLP0VywaFT2MxRnYEvE50Jgdsua4cO7iMssLsvD7YBceEw4vmBYfxhs7Ffh7NVRNmqfC3W7MMBsdf57nqN-0j7bt0Gmp3ce2blqZ05UCafCV1RrTtOwjZ9Hmem2BWXTLHRzGS0In1QlaHJk_Nr9Qcxgn7ovT74LHzmQ="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"abstract\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instead of true reasoning ability. To investigate this claim rigorously, we commission Grade School Math 1000 (GSM1k). GSM1k is designed to mirror the style and complexity of the established GSM8k benchmark, the gold standard for measuring elementary mathematical reasoning. We ensure that the two benchmarks are comparable across important metrics such as human solve rates, number of steps in solution, answer magnitude, and more. When evaluating leading open- and closed-source LLMs on GSM1k, we observe accuracy drops of up to 8%, with several families of models showing evidence of systematic overfitting across almost all model sizes. Further analysis suggests a positive relationship (Spearman's r^2 = 0.36) between a model's probability of generating an example from GSM8k and its performance gap between GSM8k and GSM1k, suggesting that some models may have partially memorized GSM8k. Nevertheless, many models, especially those on the frontier, show minimal signs of overfitting, and all models broadly demonstrate generalization to novel math problems guaranteed to not be in their training data.\", \"authors\": [\"Hugh Zhang\", \"Jeff Da\", \"Dean Lee\", \"Vaughn Robinson\", \"Catherine Wu\", \"Will Song\", \"Tiffany Zhao\", \"Pranav Raja\", \"Charlotte Zhuang\", \"Dylan Slack\", \"Qin Lyu\", \"Sean Hendryx\", \"Russell Kaplan\", \"Michele Lunati\", \"Summer Yue\"], \"published\": \"2024-05-01\", \"categories\": [\"cs.CL\", \"cs.AI\", \"cs.LG\"], \"url\": \"http://arxiv.org/abs/2405.00332v4\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  }
+ ],
+ "systemInstruction": {
+  "parts": [
+   {
+    "text": "You answer questions about machine-learning papers using only the provided tools.\nUse search_papers to find candidates, get_paper or summarize_paper for detail.\nCite papers by arXiv id in square brackets, e.g. [2401.01234].\nIf the tools return nothing relevant, say you could not find it instead of guessing."
+   }
+  ],
+  "role": "user"
+ },
+ "tools": [
+  {
+   "functionDeclarations": [
+    {
+     "description": "Semantic search over the paper corpus. Returns ids, titles and snippets.",
+     "name": "search_papers",
+     "parameters_json_schema": {
+      "properties": {
+       "query": {
+        "description": "Natural-language search query.",
+        "minLength": 1,
+        "title": "Query",
+        "type": "string"
+       },
+       "k": {
+        "default": 5,
+        "description": "Number of papers to return.",
+        "maximum": 10,
+        "minimum": 1,
+        "title": "K",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "query"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Fetch the full abstract and metadata of one paper by arXiv id.",
+     "name": "get_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Extractive summary (first sentences of the abstract) of one paper by id.",
+     "name": "summarize_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       },
+       "max_sentences": {
+        "default": 2,
+        "maximum": 5,
+        "minimum": 1,
+        "title": "Max Sentences",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    }
+   ]
+  }
+ ],
+ "generationConfig": {}
+}
+
+===== GEMINI RESPONSE #8 (HTTP 429) =====
+{
+ "error": {
+  "code": 429,
+  "message": "You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.6-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 21.367062855s.",
+  "status": "RESOURCE_EXHAUSTED",
+  "details": [
+   {
+    "@type": "type.googleapis.com/google.rpc.Help",
+    "links": [
+     {
+      "description": "Learn more about Gemini API quotas",
+      "url": "https://ai.google.dev/gemini-api/docs/rate-limits"
+     }
+    ]
+   },
+   {
+    "@type": "type.googleapis.com/google.rpc.QuotaFailure",
+    "violations": [
+     {
+      "description": "Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.",
+      "quotaMetric": "generativelanguage.googleapis.com/generate_content_free_tier_requests",
+      "quotaId": "GenerateRequestsPerMinutePerProjectPerModel-FreeTier",
+      "quotaDimensions": {
+       "location": "global",
+       "model": "gemini-3.6-flash"
+      },
+      "quotaValue": "5"
+     }
+    ]
+   },
+   {
+    "@type": "type.googleapis.com/google.rpc.RetryInfo",
+    "retryDelay": "21s"
+   }
+  ]
+ }
+}
+LLM call failed (429 RESOURCE_EXHAUSTED. {'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3.6-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 21.367062855s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'description': 'Generate content requests per minute limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.', 'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '21s'}]}}), retry 4/4 in 6.0s
+
+===== GEMINI REQUEST #9 =====
+POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent
+{
+ "host": "generativelanguage.googleapis.com",
+ "accept": "*/*",
+ "accept-encoding": "gzip, deflate",
+ "connection": "keep-alive",
+ "content-type": "application/json",
+ "x-goog-api-key": "<redacted>",
+ "user-agent": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-goog-api-client": "google-genai-sdk/2.33.0 gl-python/3.10.11",
+ "x-server-timeout": "60",
+ "content-length": "11987"
+}
+{
+ "contents": [
+  {
+   "parts": [
+    {
+     "text": "Which papers in the corpus discuss reasoning in large language models? Name one and summarize it."
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_214610",
+      "args": {
+       "query": "reasoning in large language models"
+      },
+      "name": "search_papers"
+     },
+     "thoughtSignature": "Er0CCroCAWkUfROqbzuhpB0Y8tzLns_UCeRCTeBVP0aeUpE_RR5X6iZoGmPI4cIkKUKS6PuZBItFZDSNzQy28fWJwwdOGU2BYzfuORFEQlsRMpqXETQJVlDsDqk1rrYcCeNAElf3cFb5mNbxkEKvv6UKPW-BtV42dxLNDruCGE480FqsuKP5jHWMQgiu7iil5GkA35S1bYFQ8McbgkMjYy2_rJbMbUo_iTJSY20Iijyxxh382AOHds_zqUn8XZwx0k3Sj0OzFkdet7pe5KbvF4P6A74i0d3X40HnqLX_5OTckpxZ_ilDCyFm0JGJrf2ZAnF1KEFpinXayeAKM3jA6oiy8JKeccCy6V793L_X-K9GpEhKeEdp80ZJhL9FV1tKSQp1QMBEjA3P64PnxodHQCkOY3awbxueifeTwj4jEKY="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "search_papers",
+      "response": {
+       "result": "{\"results\": [{\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"snippet\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers \", \"score\": 0.6299, \"url\": \"http://arxiv.org/abs/2407.01009v1\"}, {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"snippet\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instea\", \"score\": 0.608, \"url\": \"http://arxiv.org/abs/2405.00332v4\"}, {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"snippet\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has\", \"score\": 0.5935, \"url\": \"http://arxiv.org/abs/2401.00757v3\"}, {\"id\": \"2401.00761\", \"title\": \"Identifying the Achilles' Heel: An Iterative Method for Dynamically Uncovering Factual Errors in Large Language Models\", \"snippet\": \"Large Language Models (LLMs) like ChatGPT are foundational in various applications due to their extensive knowledge from pre-training and fine-tuning. Despite this, they are prone to generating factual and commonsense errors, raising concerns in critical areas like healthcare, journalism, and educat\", \"score\": 0.5321, \"url\": \"http://arxiv.org/abs/2401.00761v2\"}, {\"id\": \"2401.00698\", \"title\": \"Large Language Models aren't all that you need\", \"snippet\": \"This paper describes the architecture and systems built towards solving the SemEval 2023 Task 2: MultiCoNER II (Multilingual Complex Named Entity Recognition) [1]. We evaluate two approaches (a) a traditional Conditional Random Fields model and (b) a Large Language Model (LLM) fine-tuned with a cust\", \"score\": 0.5206, \"url\": \"http://arxiv.org/abs/2401.00698v1\"}]}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_189683",
+      "args": {
+       "paper_id": "2407.01009"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EroCCrcCAWkUfROz5FG98TFWg7iw4S_fRHZJ5kGFsKviLq5b8KGaQTkLgj6CPffOaPplDn9bW-JN9VXqo2X8K03OJHIKvgAdEx5pVEY2v66M55wWDjk1pyXoGOw_rhaC1xEAhnxsPFHikpDQzTLiZtvleweRYoaSPD_2t6D4vqlM9pvmwfhqzrfbxyg4A1SSQAFzBNxz45mJXvyM5U3Nf7LiOwX3zWEAxpHW-6UqVSBjDs0Jk8zIgbmk3c508Ok2HAutqUmfvolQo7SZ81yV-nuCQ66JXMJDH0mo1hqxZVIwGg2Dvv_CkPb_iz8C62B689pgYNxvwRKxyr8OItt0UMBGfSvBqwYbtbLtzt9e99Jo3VG_RP3etDRyZrGE8QBk1v-Ja-jbpbT687De27kIRI9mGZKhpozDUV24KUw="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"abstract\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However, such a simple and fast COT approach often encounters limitations in dealing with complicated problems, while a thorough method, which considers multiple reasoning pathways and verifies each step carefully, results in slower inference. This paper addresses the challenge of enabling LLMs to autonomously select between fast and slow inference methods, thereby optimizing both efficiency and effectiveness. We introduce a dynamic decision-making framework that categorizes tasks into two distinct pathways: 'Fast', designated for tasks where the LLM quickly identifies a high-confidence solution, and 'Slow', allocated for tasks that the LLM perceives as complex and for which it has low confidence in immediate solutions as well as requiring more reasoning paths to verify. Experiments on five popular reasoning benchmarks demonstrated the superiority of the DynaThink over baselines.\", \"authors\": [\"Jiabao Pan\", \"Yan Zhang\", \"Chen Zhang\", \"Zuozhu Liu\", \"Hongwei Wang\", \"Haizhou Li\"], \"published\": \"2024-07-01\", \"categories\": [\"cs.CL\"], \"url\": \"http://arxiv.org/abs/2407.01009v1\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_226128",
+      "args": {
+       "paper_id": "2401.00757"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "Eo4CCosCAWkUfROC7KoSjEgu4kfO7QQVnkl69O3O6vAF6EpTSBaRT_rglsdG_xU3S7nHYVsaCHftPt-WsMwsyPTNwoRc5VAaOi-TB0qcOkLq00A1CLvAKnJhA7nKMLmYbn-Yoa09opf7ZJmlE7ikefYYFQeeJQnhB5UPrFzKuN0PV68_pZChkKpU5HNM59V3KcH-XrXE-7h6h3kyB4yClBJpv7JOwYU8YxQ1wnAG_CcMlKXTFD-6ti5Mvfu7fyCGnyu91kugTBgiUx4eAx7lFqmt7Ne2oBZh5ojs2ITVEb7_suWQYuFHZIv4PQUEucZQIgkilnFaKI0LH7JyP0oKKorgxe7PlFc18BYcY4gNczqa"
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"abstract\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs) such as ChatGPT and GPT-4. Despite LLMs' prowess in tasks like writing assistance, code generation, and machine translation, assessing their ability to reason has been challenging. Traditional evaluations often prioritize accuracy on downstream tasks over direct assessments of reasoning processes. LogicAsker addresses this gap by employing a set of atomic reasoning skills grounded in propositional and predicate logic to systematically examine and improve the reasoning prowess of LLMs. Our methodology reveals significant gaps in LLMs' learning of logical rules, with identified reasoning failures ranging from 29\\\\% to 90\\\\% across different models. Moreover, we leverage these findings to construct targeted demonstration examples and fine-tune data, notably enhancing logical reasoning in models like GPT-4o by up to 5\\\\%. To our knowledge, this is the first effort to utilize test case outcomes to effectively refine LLMs' formal reasoning capabilities. We make our code, data, and results publicly available (https://github.com/yxwan123/LogicAsker) to facilitate further research and replication of our findings.\", \"authors\": [\"Yuxuan Wan\", \"Wenxuan Wang\", \"Yiliu Yang\", \"Youliang Yuan\", \"Jen-tse Huang\", \"Pinjia He\", \"Wenxiang Jiao\", \"Michael R. Lyu\"], \"published\": \"2024-01-01\", \"categories\": [\"cs.SE\", \"cs.AI\", \"cs.CL\", \"cs.LO\"], \"url\": \"http://arxiv.org/abs/2401.00757v3\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  },
+  {
+   "parts": [
+    {
+     "functionCall": {
+      "id": "call_187900",
+      "args": {
+       "paper_id": "2405.00332"
+      },
+      "name": "get_paper"
+     },
+     "thoughtSignature": "EpgBCpUBAWkUfRN1XQ4mfVwVyAFClGh4QgNMCnLzFJAuqLP0VywaFT2MxRnYEvE50Jgdsua4cO7iMssLsvD7YBceEw4vmBYfxhs7Ffh7NVRNmqfC3W7MMBsdf57nqN-0j7bt0Gmp3ce2blqZ05UCafCV1RrTtOwjZ9Hmem2BWXTLHRzGS0In1QlaHJk_Nr9Qcxgn7ovT74LHzmQ="
+    }
+   ],
+   "role": "model"
+  },
+  {
+   "parts": [
+    {
+     "functionResponse": {
+      "name": "get_paper",
+      "response": {
+       "result": "{\"found\": true, \"paper\": {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"abstract\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern that some of this performance actually reflects dataset contamination, where data closely resembling benchmark questions leaks into the training data, instead of true reasoning ability. To investigate this claim rigorously, we commission Grade School Math 1000 (GSM1k). GSM1k is designed to mirror the style and complexity of the established GSM8k benchmark, the gold standard for measuring elementary mathematical reasoning. We ensure that the two benchmarks are comparable across important metrics such as human solve rates, number of steps in solution, answer magnitude, and more. When evaluating leading open- and closed-source LLMs on GSM1k, we observe accuracy drops of up to 8%, with several families of models showing evidence of systematic overfitting across almost all model sizes. Further analysis suggests a positive relationship (Spearman's r^2 = 0.36) between a model's probability of generating an example from GSM8k and its performance gap between GSM8k and GSM1k, suggesting that some models may have partially memorized GSM8k. Nevertheless, many models, especially those on the frontier, show minimal signs of overfitting, and all models broadly demonstrate generalization to novel math problems guaranteed to not be in their training data.\", \"authors\": [\"Hugh Zhang\", \"Jeff Da\", \"Dean Lee\", \"Vaughn Robinson\", \"Catherine Wu\", \"Will Song\", \"Tiffany Zhao\", \"Pranav Raja\", \"Charlotte Zhuang\", \"Dylan Slack\", \"Qin Lyu\", \"Sean Hendryx\", \"Russell Kaplan\", \"Michele Lunati\", \"Summer Yue\"], \"published\": \"2024-05-01\", \"categories\": [\"cs.CL\", \"cs.AI\", \"cs.LG\"], \"url\": \"http://arxiv.org/abs/2405.00332v4\"}}"
+      }
+     }
+    }
+   ],
+   "role": "user"
+  }
+ ],
+ "systemInstruction": {
+  "parts": [
+   {
+    "text": "You answer questions about machine-learning papers using only the provided tools.\nUse search_papers to find candidates, get_paper or summarize_paper for detail.\nCite papers by arXiv id in square brackets, e.g. [2401.01234].\nIf the tools return nothing relevant, say you could not find it instead of guessing."
+   }
+  ],
+  "role": "user"
+ },
+ "tools": [
+  {
+   "functionDeclarations": [
+    {
+     "description": "Semantic search over the paper corpus. Returns ids, titles and snippets.",
+     "name": "search_papers",
+     "parameters_json_schema": {
+      "properties": {
+       "query": {
+        "description": "Natural-language search query.",
+        "minLength": 1,
+        "title": "Query",
+        "type": "string"
+       },
+       "k": {
+        "default": 5,
+        "description": "Number of papers to return.",
+        "maximum": 10,
+        "minimum": 1,
+        "title": "K",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "query"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Fetch the full abstract and metadata of one paper by arXiv id.",
+     "name": "get_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    },
+    {
+     "description": "Extractive summary (first sentences of the abstract) of one paper by id.",
+     "name": "summarize_paper",
+     "parameters_json_schema": {
+      "properties": {
+       "paper_id": {
+        "description": "arXiv id, e.g. '2401.01234'.",
+        "minLength": 1,
+        "title": "Paper Id",
+        "type": "string"
+       },
+       "max_sentences": {
+        "default": 2,
+        "maximum": 5,
+        "minimum": 1,
+        "title": "Max Sentences",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "paper_id"
+      ],
+      "type": "object"
+     }
+    }
+   ]
+  }
+ ],
+ "generationConfig": {}
+}
+
+===== GEMINI RESPONSE #9 (HTTP 200) =====
+{
+ "candidates": [
+  {
+   "content": {
+    "parts": [
+     {
+      "text": "Several papers in the corpus discuss reasoning in large language models (LLMs), including:\n\n* **\"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\"** [2407.01009]\n* **\"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\"** [2401.00757]\n* **\"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\"** [2405.00332]\n\n---\n\n### Featured Paper Summary"
+     },
+     {
+      "text": ": *DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models* [2407.01009]\n\n* **Problem & Motivation:** Standard Chain-of-Thought (CoT) prompting allows LLMs to perform fast reasoning, but it often struggles with complex problems. Conversely, more thorough reasoning methods that explore multiple pathways and verify steps are slower and inference-heavy.\n* **Proposed Solution:** The authors introduce **DynaThink**, a dynamic decision-making framework that enables LLMs to dynamically switch between fast and slow inference modes based on problem difficulty and confidence:\n  * **Fast Pathway:** Used for straightforward tasks where the model quickly identifies a high-confidence solution.\n  * **Slow Pathway:** Allocated for complex tasks where the LLM has lower initial confidence, requiring multi-path reasoning and step-by-step verification.\n* **Key Findings:** Experiments across five popular reasoning benchmarks demonstrate that DynaThink effectively balances efficiency and effectiveness, outperforming existing baseline methods.",
+      "thoughtSignature": "EvQFCvEFAWkUfRM6sRh2f/HyJZdbhG6QBRAREpSFeXvcf379w0Vd57rT+eQPqx76l5bGu7HyDLC71USIfT6YjhjrsQAxWPYcP7gCWTx0fiSklc21ufvo9GubZtLhpZqcZ1JUNWvRVTDXbKlJxlAcBppBZCGFmW5cLvcMI6pDRfm9eMcoAxOx6wSSa9QBhz3LykEr+ETLIYxUI1DXInNpl6hMCImZNKbfR3f8QzaakBfYfCQ++3j7u1ImDUwQA/JvL3LhL4rjXvpbNgSyUV5zq53haWSQYM9QaszZr5v8rXpyHXkUtwGNDO/kp4huo2qrmhfUX6P1X2pK1g4DMw1Z1i2s9EaA7n+XGSDZ37vl6LAilf5W+lcvSsinnUqLTqjtnxLz4jLEWVcuGfA8xV0PS82Bqv8qp5EAZ+YqlPPDLE49U4u8nG3xHDVSa+47OvagJuYPNzL8koLyyyvnnSzZowiEcbXVUldJhwLw34RfByrtq4SJgfWPqdwoYAilYTjpBCzK7P7n90F4FdeH16XtEJiH23STiECwKvPWoVDBxA6d7ExMtsT9Cd26CPqrR4MRu13zmSeUAmT53AOA7oN6COf2FJFOUDoW3vFEzvLA9ecAGTRq0mXW8EuTyimGWdG4wXfUMBAfVSVQn0RSuEahHuVhPz4sgzWU/ajgpjbkjodJBIWPihYWXyqYGBt1InUAr80xxdN04Nn+Wq1q0DWox10sNK09tNs7Otz/prxUVv+UG1rJiYK0qsGQK6TJIzG+gQlv8M4BskEl+29b5A/MI/GzZYyYpJjLsnt/JmprZdrH0l2xWcfsDNuIqWBcX5fq6MijOEbHkOu6gN0lRivPaoxTg4tZY1mzXlInH1flL12qwYkHFi3kaRJVfyp1F1pmfHIcy4LY0Uu9VZ21juyI0wj0KOg1Pj91WvZKMgrTi2SsfPl8Qdj5NA2cnddDXHCVdaZE+eVDncXSjNHoJAyYS20terJldurnv0PmuOAjeqKA4lEHEsOJ"
+     }
+    ],
+    "role": "model"
+   },
+   "finishReason": "STOP",
+   "index": 0
+  }
+ ],
+ "usageMetadata": {
+  "promptTokenCount": 2612,
+  "candidatesTokenCount": 333,
+  "totalTokenCount": 3137,
+  "promptTokensDetails": [
+   {
+    "modality": "TEXT",
+    "tokenCount": 2612
+   }
+  ],
+  "thoughtsTokenCount": 192,
+  "serviceTier": "standard"
+ },
+ "modelVersion": "gemini-3.6-flash",
+ "responseId": "1eviao_XDdW3z7sP6P3KqQ4"
+}
+
+===== /ask RESPONSE (HTTP 200) =====
+{
+ "answer": "Several papers in the corpus discuss reasoning in large language models (LLMs), including:\n\n* **\"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\"** [2407.01009]\n* **\"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\"** [2401.00757]\n* **\"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\"** [2405.00332]\n\n---\n\n### Featured Paper Summary: *DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models* [2407.01009]\n\n* **Problem & Motivation:** Standard Chain-of-Thought (CoT) prompting allows LLMs to perform fast reasoning, but it often struggles with complex problems. Conversely, more thorough reasoning methods that explore multiple pathways and verify steps are slower and inference-heavy.\n* **Proposed Solution:** The authors introduce **DynaThink**, a dynamic decision-making framework that enables LLMs to dynamically switch between fast and slow inference modes based on problem difficulty and confidence:\n  * **Fast Pathway:** Used for straightforward tasks where the model quickly identifies a high-confidence solution.\n  * **Slow Pathway:** Allocated for complex tasks where the LLM has lower initial confidence, requiring multi-path reasoning and step-by-step verification.\n* **Key Findings:** Experiments across five popular reasoning benchmarks demonstrate that DynaThink effectively balances efficiency and effectiveness, outperforming existing baseline methods.",
+ "sources": [
+  {
+   "id": "2407.01009",
+   "title": "DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models",
+   "url": "http://arxiv.org/abs/2407.01009v1"
+  },
+  {
+   "id": "2401.00757",
+   "title": "LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models",
+   "url": "http://arxiv.org/abs/2401.00757v3"
+  },
+  {
+   "id": "2405.00332",
+   "title": "A Careful Examination of Large Language Model Performance on Grade School Arithmetic",
+   "url": "http://arxiv.org/abs/2405.00332v4"
+  }
+ ],
+ "steps": [
+  {
+   "turn": 1,
+   "tool": "search_papers",
+   "arguments": {
+    "query": "reasoning in large language models"
+   },
+   "ok": true,
+   "output_preview": "{\"results\": [{\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"snippet\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompting. However,",
+   "llm_ms": 2330,
+   "tool_ms": 10918
+  },
+  {
+   "turn": 2,
+   "tool": "get_paper",
+   "arguments": {
+    "paper_id": "2407.01009"
+   },
+   "ok": true,
+   "output_preview": "{\"found\": true, \"paper\": {\"id\": \"2407.01009\", \"title\": \"DynaThink: Fast or Slow? A Dynamic Decision-Making Framework for Large Language Models\", \"abstract\": \"Large language models (LLMs) have demonstrated emergent capabilities across diverse reasoning tasks via popular Chains-of-Thought (COT) prompt",
+   "llm_ms": 4301,
+   "tool_ms": 2
+  },
+  {
+   "turn": 3,
+   "tool": "get_paper",
+   "arguments": {
+    "paper_id": "2401.00757"
+   },
+   "ok": true,
+   "output_preview": "{\"found\": true, \"paper\": {\"id\": \"2401.00757\", \"title\": \"LogicAsker: Evaluating and Improving the Logical Reasoning Ability of Large Language Models\", \"abstract\": \"We introduce LogicAsker, a novel approach for evaluating and enhancing the logical reasoning capabilities of large language models (LLMs)",
+   "llm_ms": 1696,
+   "tool_ms": 1
+  },
+  {
+   "turn": 4,
+   "tool": "get_paper",
+   "arguments": {
+    "paper_id": "2405.00332"
+   },
+   "ok": true,
+   "output_preview": "{\"found\": true, \"paper\": {\"id\": \"2405.00332\", \"title\": \"A Careful Examination of Large Language Model Performance on Grade School Arithmetic\", \"abstract\": \"Large language models (LLMs) have achieved impressive success on many benchmarks for mathematical reasoning. However, there is growing concern t",
+   "llm_ms": 2107,
+   "tool_ms": 1
+  }
+ ],
+ "tokens": {
+  "input_tokens": 7914,
+  "output_tokens": 850,
+  "total_tokens": 8764
+ },
+ "stopped_reason": "answered",
+ "latency_ms": 39345,
+ "llm_ms_per_turn": [
+  2330,
+  4301,
+  1696,
+  2107,
+  17989
+ ]
+}
