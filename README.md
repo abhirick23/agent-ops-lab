@@ -38,13 +38,15 @@ pytest --cov=app                                       # no network, no API key 
 {
   "answer": "… [2401.06805]",
   "sources": [{"id": "2401.06805", "title": "…", "url": "http://arxiv.org/abs/2401.06805"}],
-  "steps": [{"turn": 1, "tool": "search_papers", "arguments": {"query": "…"}, "ok": true, "output_preview": "…"}],
+  "steps": [{"turn": 1, "tool": "search_papers", "arguments": {"query": "…"}, "ok": true, "output_preview": "…", "llm_ms": 1210, "tool_ms": 35}],
   "tokens": {"input_tokens": 812, "output_tokens": 96, "total_tokens": 908},
-  "stopped_reason": "answered"
+  "stopped_reason": "answered",
+  "latency_ms": 2140,
+  "llm_ms_per_turn": [1210, 840]
 }
 ```
 
-`stopped_reason` is `max_steps` when the model still wanted tools on its last allowed turn. Sources are the papers the answer cites by id, falling back to everything retrieved. Provider errors return 502, a missing key returns 503.
+`stopped_reason` is `max_steps` when the model still wanted tools on its last allowed turn; the `answer` is then a fixed message saying the step limit was hit (never the model's partial text). `latency_ms` is the wall-clock total; `llm_ms_per_turn` has one entry per LLM call and each step carries its turn's `llm_ms` plus its own `tool_ms`. Sources are the papers the answer cites by id, falling back to everything retrieved. Provider errors return 502, a missing key returns 503.
 
 ## Claims, how measured, where the data is
 

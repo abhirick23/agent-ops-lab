@@ -1,6 +1,7 @@
 """Tool-calling loop with a hard cap on LLM turns."""
 import json
 import re
+import time
 
 from pydantic import BaseModel
 
@@ -13,7 +14,10 @@ Use search_papers to find candidates, get_paper or summarize_paper for detail.
 Cite papers by arXiv id in square brackets, e.g. [2401.01234].
 If the tools return nothing relevant, say you could not find it instead of guessing."""
 
-STEP_LIMIT_ANSWER = "I could not finish within the step limit."
+STEP_LIMIT_ANSWER = (
+    "I stopped before finishing: the step limit ({limit}) was reached while I was still gathering "
+    "information, so I have no complete answer. Try a more specific question or raise max_steps."
+)
 PREVIEW_CHARS = 300
 ARXIV_ID = re.compile(r"\d{4}\.\d{4,5}")
 
@@ -24,6 +28,12 @@ class AgentResult(BaseModel):
     steps: list[Step]
     tokens: TokenUsage
     stopped_reason: str  # "answered" | "max_steps"
+    latency_ms: int = 0
+    llm_ms_per_turn: list[int] = []
+
+
+def _ms(start: float) -> int:
+    return round((time.perf_counter() - start) * 1000)
 
 
 def _collect_sources(output: dict, found: dict[str, Source]) -> None:
@@ -44,36 +54,41 @@ class Agent:
     def run(self, question: str, max_steps: int | None = None) -> AgentResult:
         """One LLM call per step; at most `max_steps` calls."""
         limit = max_steps or self.max_steps
+        t0 = time.perf_counter()
         messages = [Message(role="user", content=question)]
         steps: list[Step] = []
         retrieved: dict[str, Source] = {}
         usage = TokenUsage()
+        llm_ms: list[int] = []
+
+        def result(answer: str, sources: list[Source], reason: str) -> AgentResult:
+            return AgentResult(answer=answer, sources=sources, steps=steps, tokens=usage, stopped_reason=reason,
+                               latency_ms=_ms(t0), llm_ms_per_turn=llm_ms)
 
         for turn in range(1, limit + 1):
+            t_llm = time.perf_counter()
             resp = self.llm.generate(SYSTEM_PROMPT, messages, self._specs)
+            llm_ms.append(_ms(t_llm))
             usage.input_tokens += resp.input_tokens
             usage.output_tokens += resp.output_tokens
 
             if not resp.tool_calls:
-                return AgentResult(
-                    answer=resp.text, sources=self._cited(resp.text, retrieved), steps=steps,
-                    tokens=usage, stopped_reason="answered",
-                )
+                return result(resp.text, self._cited(resp.text, retrieved), "answered")
             if turn == limit:  # the model wants more tools but the budget is spent
-                return AgentResult(
-                    answer=resp.text or STEP_LIMIT_ANSWER, sources=list(retrieved.values()), steps=steps,
-                    tokens=usage, stopped_reason="max_steps",
-                )
+                # resp.text here is usually "let me search..." filler, so never use it as the answer
+                return result(STEP_LIMIT_ANSWER.format(limit=limit), list(retrieved.values()), "max_steps")
 
             messages.append(Message(role="assistant", content=resp.text, tool_calls=resp.tool_calls, raw=resp.raw))
             for call in resp.tool_calls:
+                t_tool = time.perf_counter()
                 ok, output = self.tools.execute(call.name, call.arguments)
+                tool_ms = _ms(t_tool)
                 payload = output.model_dump() if isinstance(output, BaseModel) else output
                 if ok:
                     _collect_sources(payload, retrieved)
                 text = json.dumps(payload)
                 steps.append(Step(turn=turn, tool=call.name, arguments=call.arguments, ok=ok,
-                                  output_preview=text[:PREVIEW_CHARS]))
+                                  output_preview=text[:PREVIEW_CHARS], llm_ms=llm_ms[-1], tool_ms=tool_ms))
                 messages.append(Message(role="tool", tool_name=call.name, content=text))
 
         raise AssertionError("unreachable: the last turn always returns")

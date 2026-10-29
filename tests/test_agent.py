@@ -1,3 +1,5 @@
+import time
+
 from app.agent import STEP_LIMIT_ANSWER, Agent
 from tests.conftest import ScriptedLLM, text_response, tool_call_response
 
@@ -68,7 +70,7 @@ def test_max_steps_stops_a_looping_model(tools):
     assert r.stopped_reason == "max_steps"
     assert len(llm.calls) == 3  # exactly 3 LLM calls, never more
     assert len(r.steps) == 2  # the final turn's tool calls are not executed
-    assert r.answer == STEP_LIMIT_ANSWER
+    assert r.answer == STEP_LIMIT_ANSWER.format(limit=3)
     assert r.tokens.input_tokens == 30  # usage still counted for the capped run
 
 
@@ -85,3 +87,37 @@ def test_answer_on_final_allowed_turn_is_not_capped(tools):
     ])
     r = Agent(llm, tools, max_steps=2).run("q")
     assert r.stopped_reason == "answered" and r.answer == "final"
+
+
+def test_max_steps_answer_is_clear_fallback_not_model_filler(tools):
+    filler = tool_call_response("search_papers", {"query": "x"})
+    filler.text = "Let me search for that..."
+    r = Agent(ScriptedLLM([filler, filler]), tools, max_steps=2).run("q")
+    assert r.stopped_reason == "max_steps"
+    assert "Let me search" not in r.answer
+    assert "step limit (2)" in r.answer and "no complete answer" in r.answer
+
+
+def test_latency_is_recorded_per_turn_and_per_step(tools):
+    llm = ScriptedLLM([
+        tool_call_response("search_papers", {"query": "x"}),
+        text_response("done"),
+    ])
+    slow = llm.generate
+
+    def delayed(*a, **k):
+        time.sleep(0.03)
+        return slow(*a, **k)
+
+    llm.generate = delayed
+    r = Agent(llm, tools).run("q")
+    assert len(r.llm_ms_per_turn) == 2 and all(ms >= 25 for ms in r.llm_ms_per_turn)
+    assert r.steps[0].llm_ms == r.llm_ms_per_turn[0]
+    assert r.steps[0].tool_ms >= 0
+    assert r.latency_ms >= sum(r.llm_ms_per_turn)
+
+
+def test_latency_recorded_on_max_steps_too(tools):
+    llm = ScriptedLLM([tool_call_response("search_papers", {"query": "x"}) for _ in range(3)])
+    r = Agent(llm, tools, max_steps=2).run("q")
+    assert len(r.llm_ms_per_turn) == 2 and r.latency_ms >= 0

@@ -77,3 +77,23 @@ def test_ask_without_api_key_is_503(monkeypatch):
     r = TestClient(app).post("/ask", json={"question": "q"})
     assert r.status_code == 503
     main.get_agent.cache_clear()
+
+
+def test_ask_returns_latency_total_and_per_step(make_client):
+    c = make_client([
+        tool_call_response("search_papers", {"query": "boosting"}),
+        text_response("See [2401.00002]."),
+    ])
+    body = c.post("/ask", json={"question": "q"}).json()
+    assert isinstance(body["latency_ms"], int) and body["latency_ms"] >= 0
+    assert len(body["llm_ms_per_turn"]) == 2
+    step = body["steps"][0]
+    assert isinstance(step["llm_ms"], int) and isinstance(step["tool_ms"], int)
+
+
+def test_ask_max_steps_returns_fallback_answer(make_client):
+    c = make_client([tool_call_response("search_papers", {"query": "x"}) for _ in range(5)])
+    body = c.post("/ask", json={"question": "q", "max_steps": 2}).json()
+    assert body["stopped_reason"] == "max_steps"
+    assert "step limit (2)" in body["answer"]
+    assert body["latency_ms"] >= 0 and len(body["llm_ms_per_turn"]) == 2

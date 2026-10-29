@@ -28,6 +28,8 @@ class Step(BaseModel):
     arguments: dict
     ok: bool
     output_preview: str
+    llm_ms: int  # latency of the LLM call that requested this tool (shared by parallel calls)
+    tool_ms: int  # latency of executing this tool
 
 
 class TokenUsage(BaseModel):
@@ -51,3 +53,5 @@ class AskResponse(BaseModel):
     steps: list[Step]
     tokens: TokenUsage
     stopped_reason: Literal["answered", "max_steps"]
+    latency_ms: int  # wall-clock total for the whole request
+    llm_ms_per_turn: list[int]  # one entry per LLM call, including the final one

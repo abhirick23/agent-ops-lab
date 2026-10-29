@@ -46,4 +46,6 @@ def ask(req: AskRequest, agent: Agent = Depends(get_agent)) -> AskResponse:
         steps=result.steps,
         tokens=result.tokens,
         stopped_reason=result.stopped_reason,
+        latency_ms=result.latency_ms,
+        llm_ms_per_turn=result.llm_ms_per_turn,
     )
