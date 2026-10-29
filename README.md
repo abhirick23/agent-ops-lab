@@ -20,6 +20,8 @@ curl -X POST localhost:8000/ask -H 'content-type: application/json' \
 pytest --cov=app                                       # no network, no API key needed
 ```
 
+With `make` available: `make setup corpus index test run` (`make test` also writes `results/coverage.txt`).
+
 ## Layout
 
 | Path | What |
@@ -52,7 +54,7 @@ pytest --cov=app                                       # no network, no API key 
 
 | Claim | How measured | Data |
 |---|---|---|
-| Test suite passes, 91% line coverage of `app/` | `pytest --cov=app` (44 tests) | run locally; CI arrives in module 3 |
+| Test suite passes, coverage of `app/` as in the file | `pytest --cov=app` (72 tests) | `results/coverage.txt` |
 | Retrieval returns on-topic papers on the real embedder | manual spot check only, **not** a measured quality number | module 2 will measure it |
 
 Later modules add rows here (with raw outputs under `results/`).
