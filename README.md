@@ -100,6 +100,12 @@ A single question takes about 4 LLM calls and 40 s at 5 requests/min, so an 80-q
 
 The cache and the corpus hash make replay runs reproducible. Latency reporting keeps limiter wait apart from model time (`wait_ms` vs `llm_ms`).
 
+## Eval dataset (module 2)
+
+`evals/dataset.jsonl` has 80 rows written against the frozen corpus: 40 answerable (28 single-paper, 12 multi-paper), 20 unanswerable (14 topic absent from the corpus, 6 where the paper exists but its abstract lacks the detail asked for), 20 adversarial (6 prompt injections with canary strings, 4 false premises, 3 fabrication requests, 4 off-topic, 3 step-cap pushes). Fields: `id, category, expected_behavior, question, gold_paper_ids, notes`, plus `subtype`, `canary` and `support` (for each gold id, a verbatim snippet of its title/abstract that justifies it).
+
+How it was verified, and what that does not mean: I (the coding agent) drafted every row, read the abstract of every gold paper, and checked topic absence by keyword search over the whole corpus. A test (`tests/test_eval_dataset.py`) then confirms mechanically that every gold id exists and every support snippet occurs verbatim in that paper's text. **This is not independent human verification.** `evals/REVIEW.md` is a seeded 15-row sample with the evidence for each gold id, for the author to review; multi-paper gold sets are bounded by keyword search, so recall on them can be understated if a borderline paper was left out. Injection cases are in the question only: indirect injection through retrieved text would require editing the frozen corpus.
+
 ## Corpus windows
 
 `scripts/fetch_corpus.py` pools up to 50 papers per category (cs.CL, cs.LG) from each submission-date window below, then draws 200 with `random.Random(seed=42)` over the sorted pool ids. Result for the committed file: 37/36/36/28/33/30 papers from Jan/Mar/May/Jul/Sep/Nov 2024.
