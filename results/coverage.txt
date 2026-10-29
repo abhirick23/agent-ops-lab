@@ -1,28 +1,29 @@
-........................................................................ [ 80%]
-.................                                                        [100%]
+........................................................................ [ 61%]
+.............................................                            [100%]
 =============================== tests coverage ================================
 ______________ coverage: platform win32, python 3.10.11-final-0 _______________
 
 Name                        Stmts   Miss  Cover   Missing
 ---------------------------------------------------------
 app\__init__.py                 0      0   100%
-app\agent.py                   74      1    99%   102
-app\config.py                  28      0   100%
+app\agent.py                   77      1    99%   101
+app\config.py                  29      0   100%
 app\corpus.py                  16      0   100%
 app\llm\__init__.py             0      0   100%
 app\llm\base.py                22      0   100%
 app\llm\gemini.py              32      9    72%   10-11, 36-51
-app\llm\resilience.py         108      1    99%   115
+app\llm\resilience.py         117      1    99%   115
 app\llm\timing.py               7      0   100%
 app\main.py                    35      6    83%   24-29
+app\prompts.py                 11      0   100%
 app\retrieval\__init__.py       0      0   100%
 app\retrieval\embedder.py      11      6    45%   12-13, 16-20
 app\retrieval\reranker.py      11      6    45%   10-11, 14-18
 app\retrieval\store.py         53      2    96%   59-60
-app\schemas.py                 43      0   100%
+app\schemas.py                 44      0   100%
 app\tools\__init__.py           0      0   100%
 app\tools\base.py              31      0   100%
 app\tools\papers.py            46      0   100%
 ---------------------------------------------------------
-TOTAL                         517     31    94%
-89 passed, 3 deselected in 5.37s
+TOTAL                         542     31    94%
+117 passed, 3 deselected in 20.31s

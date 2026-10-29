@@ -26,7 +26,7 @@ def get_agent() -> Agent:
         log.info("empty index, loading %s", s.corpus_path)
         store.load_corpus(s.corpus_path)
     llm = build_llm(s, GeminiClient(s.gemini_api_key, s.gemini_model, s.llm_timeout_s))
-    return Agent(llm, build_tools(store), s.max_steps)
+    return Agent(llm, build_tools(store), s.max_steps, s.prompt_version)
 
 
 @app.get("/health")
@@ -47,6 +47,7 @@ def ask(req: AskRequest, agent: Agent = Depends(get_agent)) -> AskResponse:
         steps=result.steps,
         tokens=result.tokens,
         stopped_reason=result.stopped_reason,
+        prompt_version=result.prompt_version,
         latency_ms=result.latency_ms,
         llm_ms_per_turn=result.llm_ms_per_turn,
         wait_ms_per_turn=result.wait_ms_per_turn,

@@ -36,6 +36,7 @@ class Settings(BaseSettings):
     use_reranker: bool = False
     reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
 
+    prompt_version: str = "v1"  # prompts/<version>.txt
     top_k: int = 5
     max_steps: int = 5
 

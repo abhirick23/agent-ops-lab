@@ -7,13 +7,9 @@ from pydantic import BaseModel
 
 from app.llm.base import LLMClient, Message, ToolSpec
 from app.llm.timing import pop_wait_ms
+from app.prompts import load_prompt
 from app.schemas import Source, Step, TokenUsage
 from app.tools.base import ToolRegistry
-
-SYSTEM_PROMPT = """You answer questions about machine-learning papers using only the provided tools.
-Use search_papers to find candidates, get_paper or summarize_paper for detail.
-Cite papers by arXiv id in square brackets, e.g. [2401.01234].
-If the tools return nothing relevant, say you could not find it instead of guessing."""
 
 STEP_LIMIT_ANSWER = (
     "I stopped before finishing: the step limit ({limit}) was reached while I was still gathering "
@@ -29,6 +25,7 @@ class AgentResult(BaseModel):
     steps: list[Step]
     tokens: TokenUsage
     stopped_reason: str  # "answered" | "max_steps"
+    prompt_version: str = ""
     latency_ms: int = 0
     llm_ms_per_turn: list[int] = []
     wait_ms_per_turn: list[int] = []
@@ -45,8 +42,10 @@ def _collect_sources(output: dict, found: dict[str, Source]) -> None:
 
 
 class Agent:
-    def __init__(self, llm: LLMClient, tools: ToolRegistry, max_steps: int = 5):
+    def __init__(self, llm: LLMClient, tools: ToolRegistry, max_steps: int = 5, prompt_version: str = "v1"):
         self.llm = llm
+        self.prompt_version = prompt_version
+        self.system_prompt = load_prompt(prompt_version)
         self.tools = tools
         self.max_steps = max_steps
         self._specs = [
@@ -66,13 +65,13 @@ class Agent:
 
         def result(answer: str, sources: list[Source], reason: str) -> AgentResult:
             return AgentResult(answer=answer, sources=sources, steps=steps, tokens=usage, stopped_reason=reason,
-                               latency_ms=_ms(t0), llm_ms_per_turn=llm_ms, wait_ms_per_turn=wait_ms)
+                               prompt_version=self.prompt_version, latency_ms=_ms(t0), llm_ms_per_turn=llm_ms, wait_ms_per_turn=wait_ms)
 
         for turn in range(1, limit + 1):
             pop_wait_ms()  # drop any stale tally from earlier work on this thread
             t_llm = time.perf_counter()
             try:
-                resp = self.llm.generate(SYSTEM_PROMPT, messages, self._specs)
+                resp = self.llm.generate(self.system_prompt, messages, self._specs)
             finally:
                 wall, waited = _ms(t_llm), pop_wait_ms()
             wait_ms.append(waited)

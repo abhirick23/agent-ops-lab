@@ -4,7 +4,7 @@ else
 VENV_PY := .venv/bin/python
 endif
 
-.PHONY: setup corpus index test live run
+.PHONY: setup corpus index test live run eval-retrieval
 
 setup:  ## create .venv (Python 3.10+) and install the project with dev extras
 	python -m venv .venv
@@ -26,3 +26,6 @@ live:  ## live Gemini contract tests (uses free-tier quota)
 
 run:  ## start the API on http://localhost:8000
 	$(VENV_PY) -m uvicorn app.main:app --reload
+
+eval-retrieval:  ## retriever-only eval (recall@5, MRR); no LLM, no quota
+	$(VENV_PY) -m scripts.run_eval --mode retrieval --prompt v1

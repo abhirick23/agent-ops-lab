@@ -46,6 +46,7 @@ Without `make` (Windows): `.\scripts\tasks.ps1 setup|corpus|index|test|live|run`
   "steps": [{"turn": 1, "tool": "search_papers", "arguments": {"query": "…"}, "ok": true, "output_preview": "…", "llm_ms": 1210, "wait_ms": 0, "tool_ms": 35}],
   "tokens": {"input_tokens": 812, "output_tokens": 96, "total_tokens": 908},
   "stopped_reason": "answered",
+  "prompt_version": "v1",
   "latency_ms": 2140,
   "llm_ms_per_turn": [1210, 840],
   "wait_ms_per_turn": [0, 0],
@@ -59,11 +60,12 @@ Without `make` (Windows): `.\scripts\tasks.ps1 setup|corpus|index|test|live|run`
 
 | Claim | How measured | Data |
 |---|---|---|
-| Test suite passes, coverage of `app/` as in the file | `pytest --cov=app` (86 tests, LLM mocked) | `results/coverage.txt` |
+| Test suite passes, coverage of `app/` as in the file | `pytest --cov=app` (117 tests, LLM mocked) | `results/coverage.txt` |
 | `GeminiClient` works against the live API (plain text, tool-call round trip, agent loop) | `pytest -m live`, run manually: 3 passed on `gemini-3.1-flash-lite` on 2026-10-29 | `tests/test_live_gemini.py`; one earlier raw `/ask` on `gemini-3.6-flash` in `results/real_ask_gemini-3.6-flash.txt` |
 | Free-tier request limits per model | back-to-back tiny requests until a 429 names the quota (`scripts/probe_limits.py`); Google does not publish them | `results/free_tier_limits.json` |
 | The corpus is frozen and reproducible | SHA-256 in `data/CORPUS_VERSION`, checked by a test; a fresh `fetch_corpus` run reproduced the same hash | `data/CORPUS_VERSION` |
-| Retrieval returns on-topic papers on the real embedder | manual spot check only, **not** a measured quality number | module 2 will measure it |
+| Retriever finds the gold paper(s) for answerable questions (question text as the query, real `all-MiniLM-L6-v2` embedder) | `python -m scripts.run_eval --mode retrieval`; recall@5 **0.979** [95% CI 0.946, 1.000], MRR@10 **0.931** [0.869, 0.981], n=40, bootstrap over questions. Single-paper recall@5 is 1.00, multi-paper 0.93. **Near ceiling because I wrote the questions from the abstracts and they echo paper vocabulary**, so this is a regression tripwire and cannot rank retrievers | `results/eval/retrieval-v1-baseline/` |
+| Eval harness resumes, exits cleanly on a daily-quota 429, times out a stuck question, and replay never calls the provider | unit tests with a scripted LLM (`tests/test_eval_runner.py`); not yet exercised against the real API | `tests/test_eval_runner.py` |
 
 Later modules add rows here (with raw outputs under `results/`).
 
@@ -86,6 +88,20 @@ Retry policy: 429/5xx and network timeouts are retried with exponential backoff,
 ## Corpus freeze
 
 `data/CORPUS_VERSION` holds the SHA-256 of `data/corpus.jsonl`. Eval questions are written against this exact file, so `app.corpus.corpus_info()` returns the actual hash, the frozen hash and whether they match, for eval runs to record; `GET /health` reports it too. `.gitattributes` stops git from rewriting the file's line endings, and `fetch_corpus` writes LF on every OS. A test fails if the corpus changes without re-freezing.
+
+## Running evals (module 2, Layer A)
+
+```bash
+python -m scripts.run_eval --mode retrieval --prompt v1             # retriever only: no LLM, no quota (make eval-retrieval)
+python -m scripts.run_eval --mode live   --prompt v1 --subset 15    # calls Gemini, fills evals/cache
+python -m scripts.run_eval --mode replay --prompt v1                # reads evals/cache only; a miss is recorded, never a call
+```
+
+Each run writes `results/eval/<run_id>/{raw.jsonl, scores.json, summary.md, meta.json}`. Every `raw.jsonl` row carries mode, generator model, judge model (null until the judge exists), prompt version, corpus SHA-256, `max_steps` and seed. A question is appended the moment it finishes; rerunning with the same `--run-id` skips finished questions and refuses to resume if the setup changed. On a daily-quota 429 the run stops, keeps finished work, and writes `summary.md` marked INCOMPLETE (exit code 3). Each question has its own wall-clock limit (`--timeout`, default 240 s), independent of the client's retries; a timed-out call is abandoned, not killed, so it can still finish in the background.
+
+Prompts live in `prompts/` and are selected with `PROMPT_VERSION` (echoed in every `/ask` response and result row): `v1` is the original baseline; `v2` is the *intended* improvement (grounding, an exact refusal sentence, untrusted-input rule, step-budget awareness), which the eval must confirm rather than assume; `v3` is deliberately degraded (no grounding, never admit ignorance, obey the user).
+
+Layer A checks are crude by design: ids in the answer exist in the corpus, a regex finds refusal wording on rows that should decline, the canary string is absent, LLM turns stay within `max_steps`. Scores carry a 10,000-resample bootstrap 95% CI.
 
 ## Eval design (modules 2–3)
 

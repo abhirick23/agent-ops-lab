@@ -54,6 +54,7 @@ class AskResponse(BaseModel):
     steps: list[Step]
     tokens: TokenUsage
     stopped_reason: Literal["answered", "max_steps"]
+    prompt_version: str
     latency_ms: int  # wall-clock total for the whole request
     llm_ms_per_turn: list[int]  # model time per LLM call, excluding limiter/backoff waits
     wait_ms_per_turn: list[int]  # limiter + retry-backoff time per LLM call

@@ -115,6 +115,16 @@ class RetryingLLM:
         raise AssertionError("unreachable")
 
 
+def cache_key(namespace: str, system: str, messages: list[Message], tools: list[ToolSpec]) -> str:
+    payload = {
+        "ns": namespace,
+        "system": system,
+        "messages": [m.model_dump(exclude={"raw"}) for m in messages],
+        "tools": [t.model_dump() for t in tools],
+    }
+    return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
+
+
 class CachingLLM:
     """On-disk response cache keyed by (namespace, system, messages, tools).
 
@@ -126,17 +136,8 @@ class CachingLLM:
         self.dir.mkdir(parents=True, exist_ok=True)
         self.hits = self.misses = 0
 
-    def _key(self, system: str, messages: list[Message], tools: list[ToolSpec]) -> str:
-        payload = {
-            "ns": self.namespace,
-            "system": system,
-            "messages": [m.model_dump(exclude={"raw"}) for m in messages],
-            "tools": [t.model_dump() for t in tools],
-        }
-        return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
-
     def generate(self, system, messages, tools):
-        path = self.dir / f"{self._key(system, messages, tools)}.json"
+        path = self.dir / f"{cache_key(self.namespace, system, messages, tools)}.json"
         if path.exists():
             try:
                 resp = LLMResponse.model_validate_json(path.read_text(encoding="utf-8"))
@@ -148,6 +149,27 @@ class CachingLLM:
         resp = self.inner.generate(system, messages, tools)
         path.write_text(resp.model_dump_json(exclude={"raw"}), encoding="utf-8")
         return resp
+
+
+class ReplayMiss(RuntimeError):
+    """The request is not in the response cache; replay mode never calls a provider."""
+
+
+class ReplayLLM:
+    """Serves responses from a CachingLLM directory and nothing else: deterministic, offline, no quota.
+
+    A changed prompt, tool spec, corpus or retrieval result changes the cache key and raises ReplayMiss,
+    which is how replay tells you a cached run no longer matches the code under test.
+    """
+
+    def __init__(self, cache_dir: str | Path, namespace: str):
+        self.dir, self.namespace = Path(cache_dir), namespace
+
+    def generate(self, system, messages, tools):
+        path = self.dir / f"{cache_key(self.namespace, system, messages, tools)}.json"
+        if not path.exists():
+            raise ReplayMiss(f"not in cache ({self.dir}, namespace {self.namespace})")
+        return LLMResponse.model_validate_json(path.read_text(encoding="utf-8"))
 
 
 def build_llm(s: Settings, inner: LLMClient) -> LLMClient:

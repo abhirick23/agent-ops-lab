@@ -1,7 +1,7 @@
 # Windows equivalent of the Makefile (no `make` needed):  .\scripts\tasks.ps1 <task>
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet("setup", "corpus", "index", "test", "live", "run")]
+    [ValidateSet("setup", "corpus", "index", "test", "live", "run", "eval-retrieval")]
     [string]$Task
 )
 $ErrorActionPreference = "Stop"
@@ -21,5 +21,6 @@ switch ($Task) {
         & $py -m pytest --cov=app --cov-report=term-missing | Tee-Object results\coverage.txt
     }
     "live"   { & $py -m pytest -m live -v }
+    "eval-retrieval" { & $py -m scripts.run_eval --mode retrieval --prompt v1 }
     "run"    { & $py -m uvicorn app.main:app --reload }
 }
